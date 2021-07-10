@@ -24,7 +24,7 @@ module BehaviorTree
     DEFAULT_CHILDREN_TRAVERSAL_STRATEGY = :prioritize_non_success
 
     def initialize(children = [], traversal_strategy: DEFAULT_CHILDREN_TRAVERSAL_STRATEGY)
-      raise NoMethodError, "No node iteration strategy named '#{traversal_strategy}'." unless respond_to?(traversal_strategy)
+      raise NoMethodError, "Iteration strategy named '#{traversal_strategy}' does not exist." unless respond_to?(traversal_strategy)
 
       super()
       @children = children
