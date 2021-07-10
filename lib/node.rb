@@ -17,6 +17,13 @@ module BehaviorTree
       @tick_count += 1
     end
 
+    def status=(other_status)
+      status.running! if other_status.running?
+      status.failure! if other_status.failure?
+      status.success! if other_status.success?
+      status
+    end
+
     def halt!
       status.success!
     end

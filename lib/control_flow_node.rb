@@ -50,6 +50,9 @@ module BehaviorTree
         enum = send(@strategy)
         validate_enum!(enum)
 
+        # TODO: Add error for when children is empty/nil.
+        #       Recycle code so it can be used also by decorator and root node.
+
         enum.each do |child|
           child.tick!
           y << child
