@@ -12,6 +12,7 @@ describe BehaviorTree::Decorators::Retry do
   describe '.decorate' do
     context 'child returns success' do
       before { subject.tick! }
+      it { is_expected.to be_success }
       it { is_expected.to have_children_ticked_times [1] }
     end
 
@@ -28,6 +29,7 @@ describe BehaviorTree::Decorators::Retry do
       before { subject.tick! }
       # Since after the first tick it returns running, the loop does not continue.
       it { is_expected.to have_children_ticked_times [1] }
+      it { is_expected.to be_running }
     end
   end
 end

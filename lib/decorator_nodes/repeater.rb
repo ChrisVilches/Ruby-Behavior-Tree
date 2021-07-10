@@ -7,7 +7,7 @@ module BehaviorTree
       protected
 
       def repeat_while
-        child.status.success? || child.status.running?
+        child.status.success?
       end
     end
   end
