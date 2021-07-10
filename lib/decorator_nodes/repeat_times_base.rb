@@ -27,10 +27,15 @@ module BehaviorTree
           child.tick!
           break if child.status.running?
         end
-        self.status = child.status
+
+        status_map
       end
 
       protected
+
+      def status_map
+        self.status = child.status
+      end
 
       def repeat_while
         raise NotImplementedError

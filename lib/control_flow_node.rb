@@ -3,19 +3,6 @@
 require_relative './node'
 
 module BehaviorTree
-  # Exception for when the children traversal strategy is incorrect.
-  class IncorrectTraversalStrategyError < StandardError
-    def initialize(value)
-      err = [
-        "Strategy for iterating children nodes must return an object which has an 'each' method.",
-        "Attempted to use a strategy named #{value}."
-      ]
-      super err.join ' '
-    end
-  end
-end
-
-module BehaviorTree
   # A node that has children (abstract class).
   class ControlFlowNode < Node
     include NodeIterators::PrioritizeNonSuccess
@@ -37,21 +24,22 @@ module BehaviorTree
     end
 
     def halt!
+      raise InvalidLeafNodeError if @children.empty?
+
       super
+
       @children.each(&:halt!)
     end
 
     protected
 
     def tick_each_children(&block)
+      raise InvalidLeafNodeError if @children.empty?
       return enum_for(:tick_each_children) unless block_given?
 
       Enumerator.new do |y|
         enum = send(@strategy)
         validate_enum!(enum)
-
-        # TODO: Add error for when children is empty/nil.
-        #       Recycle code so it can be used also by decorator and root node.
 
         enum.each do |child|
           child.tick!

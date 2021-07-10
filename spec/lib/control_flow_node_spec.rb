@@ -27,6 +27,13 @@ describe BehaviorTree.const_get(:ControlFlowNode) do
       before { 10.times { subject.send(:tick_each_children) } }
       it { is_expected.to have_children_ticked_times [0, 0] }
     end
+
+    context 'without children' do
+      let(:nops) { [] }
+      it do
+        expect { subject.send(:tick_each_children) {} }.to raise_error BehaviorTree::InvalidLeafNodeError
+      end
+    end
   end
 
   describe '.validate_enum!' do

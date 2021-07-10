@@ -17,14 +17,27 @@ module BehaviorTree
       end
 
       def tick!
-        # TODO: Add error for when child is nil.
+        raise InvalidLeafNodeError if child.nil?
+
         child.tick!
         decorate
+        status_map
+      end
+
+      def halt!
+        @child.halt!
+        status_map
       end
 
       protected
 
+      # TODO: Comment
       def decorate
+        raise NotImplementedError
+      end
+
+      # TODO: Comment
+      def status_map
         raise NotImplementedError
       end
 
@@ -33,7 +46,7 @@ module BehaviorTree
       def validate_child!(child)
         return if child.is_a?(Node)
 
-        raise ArgumentError, "Decorator can only have a #{Node.name} object as a child. Attempted to assign #{child}."
+        raise ArgumentError, "Decorator can only have a #{Node.name} object as a child. Attempted to assign #{child.class}."
       end
     end
 

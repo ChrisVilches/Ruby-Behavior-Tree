@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 module BehaviorTree
-  # Exception for when a node has an incorrect status value.
-  class IncorrectStatusValueError < StandardError
-    def initialize(value)
-      super "Incorrect status value. A node cannot have '#{value}' status."
-    end
-  end
-end
-
-module BehaviorTree
   # Status for nodes.
   class NodeStatus
     SUCCESS = :__success__

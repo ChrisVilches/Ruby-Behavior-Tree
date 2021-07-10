@@ -3,11 +3,11 @@
 describe BehaviorTree::Decorators::Repeater do
   let(:nop_necessary_ticks) { 1 }
   let(:completes_with_failure) { false }
-  let(:initialize_child_argument) do
+  let(:child) do
     BehaviorTree::Nop.new(nop_necessary_ticks, completes_with_failure: completes_with_failure)
   end
   let(:max) { 3 }
-  subject { described_class.new initialize_child_argument, max }
+  subject { described_class.new child, max }
 
   describe '.decorate' do
     context 'child returns success' do
@@ -46,5 +46,12 @@ describe BehaviorTree::Decorators::Repeater do
         end
       end
     end
+  end
+
+  describe '.halt!' do
+    before { child.status.running! }
+    before { subject.halt! }
+    it { expect(child).to be_success }
+    it { is_expected.to be_success }
   end
 end
