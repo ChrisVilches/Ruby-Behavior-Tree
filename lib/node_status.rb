@@ -12,9 +12,9 @@ end
 module BehaviorTree
   # Status for nodes.
   class NodeStatus
-    SUCCESS = :_success
-    RUNNING = :_running
-    FAILURE = :_failure
+    SUCCESS = :__success__
+    RUNNING = :__running__
+    FAILURE = :__failure__
 
     def initialize(value)
       set(value)
@@ -27,15 +27,15 @@ module BehaviorTree
     end
 
     def success!
-      @value = SUCCESS
+      set(SUCCESS)
     end
 
     def running!
-      @value = RUNNING
+      set(RUNNING)
     end
 
     def failure!
-      @value = FAILURE
+      set(FAILURE)
     end
 
     def success?

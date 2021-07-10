@@ -8,22 +8,16 @@ module BehaviorTree
     def tick!
       super
 
-      resume_tick_each_children do |child|
-        one_failed if child.failure?
-        one_running if child.running?
-        return nil unless child.success?
+      statuses = resume_tick_each_children do |child|
+        if child.status.failure?
+          status.failure!
+          return nil
+        end
+
+        child.status
       end
 
-      halt!
-    end
-
-    def one_running
-      status.running!
-    end
-
-    def one_failed
-      halt!
-      status.failure!
+      halt! if statuses.all?(&:success?)
     end
   end
 end

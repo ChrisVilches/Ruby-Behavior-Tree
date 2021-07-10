@@ -3,8 +3,8 @@
 require_relative '../loader'
 
 describe BehaviorTree::Selector do
-  let(:nop1) { BehaviorTree::Nop.new(1) }
   let(:nop2) { BehaviorTree::Nop.new(2) }
+  let(:nop3) { BehaviorTree::Nop.new(3) }
   let(:children) { subject.send(:children) }
   subject { described_class.new(children) }
 
@@ -21,10 +21,16 @@ describe BehaviorTree::Selector do
         it_behaves_like 'status is running'
         it_behaves_like 'all children have running status'
       end
+
+      context 'has been ticked twice' do
+        before { 2.times { subject.tick! } }
+        it_behaves_like 'status is success'
+        it_behaves_like 'all children have success status'
+      end
     end
 
-    context 'has two children (nop operations that require 1 and 2 ticks to complete respectively)' do
-      let(:children) { [nop1, nop2] }
+    context 'has two children (nop operations that require 2 and 3 ticks to complete respectively)' do
+      let(:children) { [nop2, nop3] }
 
       context 'no ticks yet' do
         it_behaves_like 'status is success'
@@ -32,6 +38,12 @@ describe BehaviorTree::Selector do
 
       context 'has been ticked once' do
         before { subject.tick! }
+        it_behaves_like 'status is running'
+        it_behaves_like 'all children have running status'
+      end
+
+      context 'has been ticked once' do
+        before { 2.times { subject.tick! } }
         it_behaves_like 'status is success'
         it_behaves_like 'all children have success status' # One completes, therefore halts all others.
       end

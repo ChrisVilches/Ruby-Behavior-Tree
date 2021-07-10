@@ -9,7 +9,7 @@ shared_examples 'status is running' do
 end
 
 shared_examples 'status is failure' do
-  it { expect(subject.status.running?).to be true }
+  it { expect(subject.status.failure?).to be true }
 end
 
 shared_examples 'all children have success status' do
@@ -27,5 +27,14 @@ shared_examples 'all children have running status' do
                          .map { |child| child.status.running? }
                          .all?(true)
     expect(all_running).to be true
+  end
+end
+
+shared_examples 'all children have failure status' do
+  it do
+    all_failure = subject.instance_variable_get(:@children)
+                         .map { |child| child.status.failure? }
+                         .all?(true)
+    expect(all_failure).to be true
   end
 end
