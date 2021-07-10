@@ -20,12 +20,12 @@ describe BehaviorTree.const_get(:ControlFlowNode) do
     end
     context 'having a block' do
       before { 10.times { subject.send(:tick_each_children) {} } }
-      it { expect(subject).to have_children_ticked_times [10, 10] }
+      it { is_expected.to have_children_ticked_times [10, 10] }
     end
 
     context 'not having a block' do
       before { 10.times { subject.send(:tick_each_children) } }
-      it { expect(subject).to have_children_ticked_times [0, 0] }
+      it { is_expected.to have_children_ticked_times [0, 0] }
     end
   end
 

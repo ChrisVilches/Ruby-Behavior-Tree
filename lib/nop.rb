@@ -15,7 +15,7 @@ module BehaviorTree
       super()
       @necessary_ticks = necessary_ticks
       @completes_with_status = completes_with_failure ? NodeStatus::FAILURE : NodeStatus::SUCCESS
-      reset
+      reset_remaining_attempts
     end
 
     def tick!
@@ -25,17 +25,17 @@ module BehaviorTree
       return if @remaining_ticks.positive?
 
       status.set @completes_with_status
-      reset
+      reset_remaining_attempts
     end
 
     def halt!
       super
-      reset
+      reset_remaining_attempts
     end
 
     private
 
-    def reset
+    def reset_remaining_attempts
       @remaining_ticks = @necessary_ticks
     end
   end

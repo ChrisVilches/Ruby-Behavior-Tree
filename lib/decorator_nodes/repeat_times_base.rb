@@ -18,12 +18,11 @@ module BehaviorTree
       end
 
       def decorate
-        puts "before retry loop, count = #{@remaining_attempts}, child status = #{child.status.inspect}"
         while repeat_while || child.status.running?
           break if child.status.running?
+
           @remaining_attempts -= 1
-          return unless @remaining_attempts.positive?
-          puts "RETRYING, count = #{@remaining_attempts}, child status = #{child.status.inspect}"
+          break unless @remaining_attempts.positive?
 
           child.tick!
           break if child.status.running?

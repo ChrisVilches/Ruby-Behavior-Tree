@@ -3,7 +3,7 @@
 describe BehaviorTree::Nop do
   let(:necessary_ticks) { 1 }
   subject { described_class.new(necessary_ticks) }
-  it { expect(subject).to be_a BehaviorTree::Task }
+  it { is_expected.to be_a BehaviorTree::Task }
 
   context 'necessary ticks is 0' do
     let(:necessary_ticks) { 0 }
@@ -16,18 +16,18 @@ describe BehaviorTree::Nop do
 
       context 'no ticks yet' do
         it 'has node default status' do
-          expect(subject).to be_success
+          is_expected.to be_success
         end
       end
 
       context 'has been ticked only once' do
         before { subject.tick! }
-        it { expect(subject).to be_running }
+        it { is_expected.to be_running }
       end
 
       context 'has been ticked twice' do
         before { 2.times { subject.tick! } }
-        it { expect(subject).to be_success }
+        it { is_expected.to be_success }
       end
     end
   end
@@ -39,7 +39,7 @@ describe BehaviorTree::Nop do
       before { subject.halt! }
 
       it 'goes back to node default status' do
-        expect(subject).to be_success
+        is_expected.to be_success
       end
     end
   end
