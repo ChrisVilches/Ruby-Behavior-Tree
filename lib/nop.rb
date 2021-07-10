@@ -7,7 +7,7 @@ require_relative './task'
 module BehaviorTree
   # An empty task that does not do anything.
   # It requires N ticks to complete.
-  # It can be set to end with failure
+  # It can be set to end with failure.
   class Nop < Task
     def initialize(necessary_ticks = 1, completes_with_failure: false)
       raise ArgumentError, 'Should need at least one tick' if necessary_ticks < 1

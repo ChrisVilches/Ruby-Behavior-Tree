@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe BehaviorTree::NodeIterators::PrioritizeNonSuccess do
-  subject { BehaviorTree::ControlFlowNode.new }
+  subject { BehaviorTree.const_get(:ControlFlowNode).new }
 
   describe '.prioritize_non_success' do
     context 'has some children' do

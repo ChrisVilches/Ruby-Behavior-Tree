@@ -65,6 +65,5 @@ module BehaviorTree
     end
   end
 
-  # TODO: Set as private. Can be done but Rspec fails.
-  # private_constant :NodeStatus
+  private_constant :NodeStatus
 end
