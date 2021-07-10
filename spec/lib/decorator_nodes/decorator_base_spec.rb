@@ -14,4 +14,8 @@ describe BehaviorTree::Decorators.const_get(:DecoratorBase) do
       it { expect { subject }.to_not raise_error }
     end
   end
+
+  describe '.tick!' do
+    it { expect { subject.tick! }.to raise_error NotImplementedError }
+  end
 end
