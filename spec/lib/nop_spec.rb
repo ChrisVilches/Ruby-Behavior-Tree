@@ -18,18 +18,18 @@ describe BehaviorTree::Nop do
 
       context 'no ticks yet' do
         it 'has node default status' do
-          expect(subject.status.success?).to be true
+          expect(subject).to be_success
         end
       end
 
       context 'has been ticked only once' do
         before { subject.tick! }
-        it { expect(subject.status.running?).to be true }
+        it { expect(subject).to be_running }
       end
 
       context 'has been ticked twice' do
         before { 2.times { subject.tick! } }
-        it { expect(subject.status.success?).to be true }
+        it { expect(subject).to be_success }
       end
     end
   end
@@ -41,7 +41,7 @@ describe BehaviorTree::Nop do
       before { subject.halt! }
 
       it 'goes back to node default status' do
-        expect(subject.status.success?).to be true
+        expect(subject).to be_success
       end
     end
   end

@@ -26,6 +26,12 @@ module BehaviorTree
       @value = value
     end
 
+    def to_sym
+      return :success if success?
+      return :running if running?
+      return :failure if failure?
+    end
+
     def success!
       set(SUCCESS)
     end
@@ -50,4 +56,7 @@ module BehaviorTree
       @value == FAILURE
     end
   end
+
+  # TODO: Set as private. Can be done but Rspec fails.
+  # private_constant :NodeStatus
 end

@@ -1,23 +1,20 @@
 # frozen_string_literal: true
 
-require_relative './branch_node'
+require_relative './control_flow_node'
 
 module BehaviorTree
   # A sequence node.
-  class Sequence < BranchNode
+  class Sequence < ControlFlowNode
     def tick!
       super
 
-      statuses = resume_tick_each_children do |child|
-        if child.status.failure?
-          status.failure!
-          return nil
-        end
-
-        child.status
+      resume_tick_each_children do |child|
+        return status.running! if child.status.running?
+        return status.failure! if child.status.failure?
       end
 
-      halt! if statuses.all?(&:success?)
+      halt!
+      status.success!
     end
   end
 end

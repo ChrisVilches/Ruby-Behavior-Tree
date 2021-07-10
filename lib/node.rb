@@ -17,4 +17,7 @@ module BehaviorTree
       raise NotImplementedError
     end
   end
+
+  # TODO: Set as private. Can be done but Rspec fails.
+  # private_constant :Node
 end

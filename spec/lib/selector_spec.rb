@@ -13,19 +13,19 @@ describe BehaviorTree::Selector do
       let(:children) { [nop2] }
 
       context 'no ticks yet' do
-        it_behaves_like 'status is success'
+        it { expect(subject).to be_success }
       end
 
       context 'has been ticked once' do
         before { subject.tick! }
-        it_behaves_like 'status is running'
-        it_behaves_like 'all children have running status'
+        it { expect(subject).to be_running }
+        it { expect(subject).to have_children_statuses :running }
       end
 
       context 'has been ticked twice' do
         before { 2.times { subject.tick! } }
-        it_behaves_like 'status is success'
-        it_behaves_like 'all children have success status'
+        it { expect(subject).to be_success }
+        it { expect(subject).to have_children_statuses :success }
       end
     end
 
@@ -33,19 +33,21 @@ describe BehaviorTree::Selector do
       let(:children) { [nop2, nop3] }
 
       context 'no ticks yet' do
-        it_behaves_like 'status is success'
+        it { expect(subject).to be_success }
       end
 
       context 'has been ticked once' do
         before { subject.tick! }
-        it_behaves_like 'status is running'
-        it_behaves_like 'all children have running status'
+        it { expect(subject).to be_running }
+        it "gets 'running' status from child, so the next child is not ticked yet" do
+          expect(subject).to have_children_statuses %i[running success]
+        end
       end
 
       context 'has been ticked once' do
         before { 2.times { subject.tick! } }
-        it_behaves_like 'status is success'
-        it_behaves_like 'all children have success status' # One completes, therefore halts all others.
+        it { expect(subject).to be_success }
+        it { expect(subject).to have_children_statuses :success } # One completes, therefore halts all others.
       end
     end
   end

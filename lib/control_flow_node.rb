@@ -4,7 +4,7 @@ require_relative './node'
 
 module BehaviorTree
   # A node that has children (abstract class).
-  class BranchNode < Node
+  class ControlFlowNode < Node
     def initialize(children = [])
       super()
       @children = children
@@ -39,4 +39,7 @@ module BehaviorTree
       tick_each_children filtered_children, &block
     end
   end
+
+  # TODO: Set as private. Can be done but Rspec fails.
+  # private_constant :ControlFlowNode
 end
