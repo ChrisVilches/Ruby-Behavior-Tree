@@ -6,7 +6,7 @@ module BehaviorTree
     def tick!
       super
 
-      resume_tick_each_children do |child|
+      tick_each_children do |child|
         # A bit verbose, but helps understand what happens in each case.
         if child.status.success?
           halt!

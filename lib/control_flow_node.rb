@@ -6,14 +6,21 @@ module BehaviorTree
   # A node that has children (abstract class).
   class ControlFlowNode < Node
     include NodeIterators::PrioritizeNonSuccess
+    include NodeIterators::AllNodes
 
-    def initialize(children = [])
+    DEFAULT_CHILDREN_EXECUTION_STRATEGY = :non_success
+
+    def initialize(children = [], strategy: DEFAULT_CHILDREN_EXECUTION_STRATEGY)
+      raise NoMethodError, "No node iteration strategy named '#{strategy}'." unless respond_to?(strategy)
+
       super()
       @children = children
+      @strategy = strategy
     end
 
     def <<(child)
       @children << child
+      @children.flatten! # Accepts array of children too.
     end
 
     def halt!
@@ -21,20 +28,18 @@ module BehaviorTree
       @children.each(&:halt!)
     end
 
-    def tick_child(child, &block)
-      child.tick!
-      block&.call(child)
-      child.status
-    end
+    protected
 
-    def tick_each_children(children = @children, &block)
-      return children.each unless block_given?
+    def tick_each_children(&block)
+      return enum_for(:tick_each_children) unless block_given?
+      raise "fuck" unless block_given?
 
-      children.map do |child|
-        child.tick!
-        block&.call(child)
-        child.status
-      end
+      Enumerator.new do |y|
+        send(@strategy).each do |child|
+          child.tick!
+          y << child
+        end
+      end.each(&block)
     end
   end
 
