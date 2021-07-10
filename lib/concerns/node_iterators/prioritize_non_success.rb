@@ -5,7 +5,7 @@ module BehaviorTree
     # If there's at least one node without 'success' status, then iterate starting from there, in order.
     # Else, iterate all nodes.
     module PrioritizeNonSuccess
-      def non_success
+      def prioritize_non_success
         idx = @children.find_index { |child| !child.status.success? }
 
         Enumerator.new do |y|

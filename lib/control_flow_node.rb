@@ -8,7 +8,7 @@ module BehaviorTree
     include NodeIterators::PrioritizeNonSuccess
     include NodeIterators::AllNodes
 
-    DEFAULT_CHILDREN_EXECUTION_STRATEGY = :non_success
+    DEFAULT_CHILDREN_EXECUTION_STRATEGY = :prioritize_non_success
 
     def initialize(children = [], strategy: DEFAULT_CHILDREN_EXECUTION_STRATEGY)
       raise NoMethodError, "No node iteration strategy named '#{strategy}'." unless respond_to?(strategy)
@@ -32,7 +32,6 @@ module BehaviorTree
 
     def tick_each_children(&block)
       return enum_for(:tick_each_children) unless block_given?
-      raise "fuck" unless block_given?
 
       Enumerator.new do |y|
         send(@strategy).each do |child|
