@@ -3,19 +3,32 @@
 require_relative './node'
 
 module BehaviorTree
+  # Exception for when the children traversal strategy is incorrect.
+  class IncorrectTraversalStrategyError < StandardError
+    def initialize(value)
+      err = [
+        "Strategy for iterating children nodes must return an object which has an 'each' method.",
+        "Attempted to use a strategy named #{value}."
+      ]
+      super err.join ' '
+    end
+  end
+end
+
+module BehaviorTree
   # A node that has children (abstract class).
   class ControlFlowNode < Node
     include NodeIterators::PrioritizeNonSuccess
     include NodeIterators::AllNodes
 
-    DEFAULT_CHILDREN_EXECUTION_STRATEGY = :prioritize_non_success
+    DEFAULT_CHILDREN_TRAVERSAL_STRATEGY = :prioritize_non_success
 
-    def initialize(children = [], strategy: DEFAULT_CHILDREN_EXECUTION_STRATEGY)
-      raise NoMethodError, "No node iteration strategy named '#{strategy}'." unless respond_to?(strategy)
+    def initialize(children = [], traversal_strategy: DEFAULT_CHILDREN_TRAVERSAL_STRATEGY)
+      raise NoMethodError, "No node iteration strategy named '#{traversal_strategy}'." unless respond_to?(traversal_strategy)
 
       super()
       @children = children
-      @strategy = strategy
+      @strategy = traversal_strategy
     end
 
     def <<(child)
@@ -34,11 +47,19 @@ module BehaviorTree
       return enum_for(:tick_each_children) unless block_given?
 
       Enumerator.new do |y|
-        send(@strategy).each do |child|
+        enum = send(@strategy)
+        validate_enum!(enum)
+
+        enum.each do |child|
           child.tick!
           y << child
         end
       end.each(&block)
+    end
+
+    # Keep it simple, because it's executed everytime it ticks.
+    def validate_enum!(enum)
+      raise IncorrectTraversalStrategyError, enum unless enum.respond_to? :each
     end
   end
 

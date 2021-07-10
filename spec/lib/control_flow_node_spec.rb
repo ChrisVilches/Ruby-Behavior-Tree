@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 describe BehaviorTree::ControlFlowNode do
-  subject { described_class.new([], strategy: :all_nodes) }
+  let(:traversal_strategy) { :all_nodes }
+  subject { described_class.new([], traversal_strategy: traversal_strategy) }
   let(:nops) { [BehaviorTree::Nop.new(1), BehaviorTree::Nop.new(2)] }
   before { subject << nops }
 
@@ -25,6 +26,13 @@ describe BehaviorTree::ControlFlowNode do
     context 'not having a block' do
       before { 10.times { subject.send(:tick_each_children) } }
       it { expect(subject).to have_children_ticked_times [0, 0] }
+    end
+  end
+
+  describe '.validate_enum!' do
+    let(:traversal_strategy) { :to_s }
+    it do
+      expect { subject.send(:tick_each_children) {} }.to raise_error BehaviorTree::IncorrectTraversalStrategyError
     end
   end
 end

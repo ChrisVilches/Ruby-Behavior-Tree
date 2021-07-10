@@ -2,7 +2,7 @@
 
 module BehaviorTree
   # Exception for when a node has an incorrect status value.
-  class IncorrectStatusValue < StandardError
+  class IncorrectStatusValueError < StandardError
     def initialize(value)
       super "Incorrect status value. A node cannot have '#{value}' status."
     end
@@ -21,7 +21,7 @@ module BehaviorTree
     end
 
     def set(value)
-      raise IncorrectStatusValue, value unless [SUCCESS, RUNNING, FAILURE].include?(value)
+      raise IncorrectStatusValueError, value unless [SUCCESS, RUNNING, FAILURE].include?(value)
 
       @value = value
     end

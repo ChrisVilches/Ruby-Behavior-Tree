@@ -16,7 +16,7 @@ describe BehaviorTree::NodeStatus do
   end
   context 'incorrect value' do
     let(:value) { :incorrect_value }
-    it { expect { subject }.to raise_error BehaviorTree::IncorrectStatusValue }
+    it { expect { subject }.to raise_error BehaviorTree::IncorrectStatusValueError }
   end
 
   describe '.set' do
