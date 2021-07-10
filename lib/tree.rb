@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class Tree
-  def initialize
+module BehaviorTree
+  class Tree
+    def initialize
+    end
   end
 end
