@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../loader'
-
 describe BehaviorTree::Sequence do
   let(:nop2) { BehaviorTree::Nop.new(2, completes_with_failure: completes_with_failure) }
   let(:nop3) { BehaviorTree::Nop.new(3, completes_with_failure: completes_with_failure) }

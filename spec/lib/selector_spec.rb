@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../loader'
-
 describe BehaviorTree::Selector do
   let(:completes_with_failure) { false }
   let(:nop2) { BehaviorTree::Nop.new(2, completes_with_failure: completes_with_failure) }

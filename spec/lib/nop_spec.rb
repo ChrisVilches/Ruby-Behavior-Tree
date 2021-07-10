@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../loader'
-
 describe BehaviorTree::Nop do
   let(:necessary_ticks) { 1 }
   subject { described_class.new(necessary_ticks) }

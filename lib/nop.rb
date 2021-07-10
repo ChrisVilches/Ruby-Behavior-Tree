@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: Is it possible to autoload everything? It seems some files fail due to dependencies
+#       when I use the autoloader I made.
 require_relative './task'
 
 module BehaviorTree

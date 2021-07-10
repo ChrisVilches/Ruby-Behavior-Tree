@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../loader'
-
 describe BehaviorTree::NodeStatus do
   subject { described_class.new value }
   context 'success' do

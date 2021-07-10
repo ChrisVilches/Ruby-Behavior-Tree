@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './control_flow_node'
-
 module BehaviorTree
   # A selector node.
   class Selector < ControlFlowNode

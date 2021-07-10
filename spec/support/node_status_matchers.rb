@@ -20,7 +20,7 @@ RSpec::Matchers.define :have_children_statuses do |expected_statuses|
     children = node.instance_variable_get(:@children)
 
     # If single value N, transform into [N, N, N, ...]
-    expected_statuses = Array.new(children.count, expected_statuses) unless expected_statuses.is_a?(Array)
+    expected_statuses = [expected_statuses] * children.count unless expected_statuses.is_a?(Array)
 
     expected_statuses == children.map { |child| child.status.to_sym }
   end

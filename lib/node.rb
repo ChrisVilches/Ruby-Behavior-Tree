@@ -11,11 +11,14 @@ module BehaviorTree
     end
 
     def tick!
-      raise NotImplementedError
+      status.running!
+      # TODO: At the moment, this is only used in tests, and all nodes tested are tasks.
+      #       Modify it so that only tasks do this?
+      @tick_count += 1
     end
 
     def halt!
-      raise NotImplementedError
+      status.success!
     end
   end
 
