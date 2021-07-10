@@ -3,7 +3,6 @@
 require_relative '../loader'
 
 describe BehaviorTree::Sequence do
-  let(:nop1) { BehaviorTree::Nop.new(1, completes_with_failure: completes_with_failure) }
   let(:nop2) { BehaviorTree::Nop.new(2, completes_with_failure: completes_with_failure) }
   let(:nop3) { BehaviorTree::Nop.new(3, completes_with_failure: completes_with_failure) }
   let(:children) { subject.send(:children) }
@@ -48,35 +47,40 @@ describe BehaviorTree::Sequence do
       context 'has been ticked once' do
         before { subject.tick! }
         it { expect(subject).to be_running }
-        it "gets 'running' status from the first node, so it does not tick the second node" do
-          expect(subject).to have_children_statuses %i[running success]
-        end
+        it { expect(subject).to have_children_statuses %i[running success] }
+        it { expect(subject).to have_children_ticked_times [1, 0] }
       end
 
       context 'has been ticked twice' do
         before { 2.times { subject.tick! } }
         it { expect(subject).to be_running } # One completes, but needs others to complete.
-        it 'has completed only one child' do
-          expect(subject).to have_children_statuses %i[success running]
-        end
+        it { expect(subject).to have_children_statuses %i[success running] }
+        it { expect(subject).to have_children_ticked_times [2, 1] }
 
         context 'nop operation ends with failure' do
           let(:completes_with_failure) { true }
           it { expect(subject).to be_failure }
-          it 'has one child with failure status' do
-            # Both nop operations were set to finish with failure,
-            # but only the first one finishes, because it was only
-            # ticked twice before checking this.
-            expect(subject).to have_children_statuses %i[failure running]
-          end
+          it { expect(subject).to have_children_statuses %i[failure success] }
+          it { expect(subject).to have_children_ticked_times [2, 0] }
         end
       end
 
       context 'has been ticked three times' do
         before { 3.times { subject.tick! } }
-        it { expect(subject).to be_success }
-        it 'completes the first node so it gets resetted, and the second node just completes' do
-          expect(subject).to have_children_statuses %i[running failure]
+        it { expect(subject).to be_running }
+        it { expect(subject).to have_children_statuses %i[success running] }
+
+        # Trace:
+        # Tick #1: Tick first node (running, so stop).
+        # Tick #2: Tick first node (success, so continue), tick second node.
+        # Tick #3: Start from non-success nodes, so tick only second node.
+        it { expect(subject).to have_children_ticked_times [2, 2] }
+
+        context 'nop operation ends with failure' do
+          let(:completes_with_failure) { true }
+          it { expect(subject).to be_running }
+          it { expect(subject).to have_children_statuses %i[running success] }
+          it { expect(subject).to have_children_ticked_times [3, 0] }
         end
       end
     end

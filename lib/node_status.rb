@@ -26,6 +26,14 @@ module BehaviorTree
       @value = value
     end
 
+    def ==(other)
+      to_sym == other.to_sym
+    end
+
+    def inspect
+      to_sym
+    end
+
     def to_sym
       return :success if success?
       return :running if running?

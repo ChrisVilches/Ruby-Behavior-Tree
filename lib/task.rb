@@ -7,6 +7,10 @@ module BehaviorTree
   class Task < Node
     def tick!
       status.running!
+
+      # TODO: Only task nodes increase this?
+      #       (At the moment, this is only used in tests, and all nodes tested are tasks.)
+      @tick_count += 1
     end
 
     def halt!

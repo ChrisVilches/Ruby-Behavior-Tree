@@ -19,8 +19,8 @@ module BehaviorTree
     def tick!
       super
 
-      @required_ticks -= 1
-      return if @required_ticks.positive?
+      @remaining_ticks -= 1
+      return if @remaining_ticks.positive?
 
       status.set @completes_with_status
       reset
@@ -34,7 +34,7 @@ module BehaviorTree
     private
 
     def reset
-      @required_ticks = @necessary_ticks
+      @remaining_ticks = @necessary_ticks
     end
   end
 end

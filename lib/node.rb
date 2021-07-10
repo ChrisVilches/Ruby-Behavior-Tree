@@ -3,10 +3,11 @@
 module BehaviorTree
   # A node (abstract class).
   class Node
-    attr_reader :status
+    attr_reader :status, :tick_count
 
     def initialize
       @status = NodeStatus.new NodeStatus::SUCCESS
+      @tick_count = 0
     end
 
     def tick!
