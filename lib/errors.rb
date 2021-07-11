@@ -7,7 +7,7 @@ module BehaviorTree
     def initialize(value)
       err = [
         "Strategy for iterating children nodes must return an object which has an 'each' method.",
-        "Attempted to use a strategy named #{value}."
+        "Attempted to use strategy: #{value}."
       ]
       super err.join ' '
     end

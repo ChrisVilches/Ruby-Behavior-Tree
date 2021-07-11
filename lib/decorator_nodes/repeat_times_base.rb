@@ -33,10 +33,6 @@ module BehaviorTree
 
       protected
 
-      def status_map
-        self.status = child.status
-      end
-
       def repeat_while
         raise NotImplementedError
       end

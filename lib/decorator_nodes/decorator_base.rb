@@ -18,6 +18,10 @@ module BehaviorTree
 
       def tick!
         raise InvalidLeafNodeError if child.nil?
+        unless should_tick?
+          status.failure!
+          return
+        end
 
         child.tick!
         decorate
@@ -38,7 +42,11 @@ module BehaviorTree
 
       # TODO: Comment
       def status_map
-        raise NotImplementedError
+        self.status = child.status
+      end
+
+      def should_tick?
+        true
       end
 
       private
