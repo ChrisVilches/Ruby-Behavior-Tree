@@ -24,6 +24,16 @@ module BehaviorTree
       end
     end
 
+    def size
+      1 + if @children.is_a?(Array)
+            @children.map(&:size).sum
+          elsif @child.is_a?(NodeBase)
+            @child.size
+          else
+            0
+          end
+    end
+
     def tick!
       prevented = prevent_tick?.is_a?(TrueClass)
 
