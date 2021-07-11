@@ -4,12 +4,24 @@ module BehaviorTree
   # A node (abstract class).
   class NodeBase
     attr_reader :status, :tick_count
-    attr_writer :context
 
     def initialize
       @status = NodeStatus.new NodeStatus::SUCCESS
       @tick_count = 0
       @context = nil
+    end
+
+    def context=(context)
+      @context = context
+
+      # Propagate context.
+      if @children.is_a?(Array)
+        @children.each do |child|
+          child.context = context
+        end
+      elsif @child.is_a?(NodeBase)
+        @child.context = context
+      end
     end
 
     def tick!

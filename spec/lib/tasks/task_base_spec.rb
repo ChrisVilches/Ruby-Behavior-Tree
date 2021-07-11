@@ -3,7 +3,7 @@
 describe BehaviorTree::TaskBase do
   let(:context) { { a: 1 } }
   let(:sum_task) do
-    described_class.new do |context, status|
+    described_class.new do
       context[:a] += 1
       status.success!
     end

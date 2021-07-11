@@ -10,7 +10,7 @@ module BehaviorTree
         raise InvalidLeafNodeError if child.nil?
         return if child.is_a?(NodeBase)
 
-        err = "Decorator can only have a #{NodeBase.name} object as a child. Attempted to assign #{child.class}."
+        err = "This node can only have a #{NodeBase.name} object as a child. Attempted to assign #{child.class}."
         raise ArgumentError, err
       end
     end

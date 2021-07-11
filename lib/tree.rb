@@ -4,6 +4,8 @@ module BehaviorTree
   # Root node of the tree.
   # This is the class that must be instantiated by the user.
   class Tree < SingleChildNodeBase
+    attr_reader :context
+
     CHILD_VALID_CLASSES = [
       Decorators::DecoratorBase, ControlNodeBase, TaskBase
     ].freeze

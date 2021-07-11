@@ -12,7 +12,12 @@ module BehaviorTree
     end
 
     def on_tick
-      @task_block.call @context, status
+      eval 'self', @task_block.binding, __FILE__, __LINE__
+      instance_eval(&@task_block)
     end
+
+    private
+
+    attr_reader :context
   end
 end
