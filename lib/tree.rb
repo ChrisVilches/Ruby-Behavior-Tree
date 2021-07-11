@@ -3,7 +3,7 @@
 module BehaviorTree
   # Root node of the tree.
   # This is the class that must be instantiated by the user.
-  class Tree < ControlFlowNode
+  class Tree
     def initialize
       # Implementation should be:
       # Has tick! method

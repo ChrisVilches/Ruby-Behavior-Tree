@@ -46,7 +46,8 @@ module BehaviorTree
       def validate_child!(child)
         return if child.is_a?(Node)
 
-        raise ArgumentError, "Decorator can only have a #{Node.name} object as a child. Attempted to assign #{child.class}."
+        err = "Decorator can only have a #{Node.name} object as a child. Attempted to assign #{child.class}."
+        raise ArgumentError, err
       end
     end
 
