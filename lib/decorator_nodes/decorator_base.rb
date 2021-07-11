@@ -18,6 +18,7 @@ module BehaviorTree
 
       def tick!
         raise InvalidLeafNodeError if child.nil?
+
         unless should_tick?
           status.failure!
           return
