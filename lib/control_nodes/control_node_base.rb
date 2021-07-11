@@ -24,6 +24,7 @@ module BehaviorTree
     def <<(child)
       @children << child
       @children.flatten! # Accepts array of children too.
+      @children.map!(&:chainable_node)
     end
 
     def halt!
@@ -41,8 +42,9 @@ module BehaviorTree
     end
 
     def tick_each_children(&block)
-      validate_non_leaf!
       return enum_for(:tick_each_children) unless block_given?
+
+      validate_non_leaf!
 
       Enumerator.new do |y|
         enum = send(@strategy)

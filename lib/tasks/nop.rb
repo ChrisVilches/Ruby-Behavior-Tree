@@ -16,9 +16,7 @@ module BehaviorTree
       reset_remaining_attempts
     end
 
-    def tick!
-      super
-
+    def on_tick
       @remaining_ticks -= 1
       return if @remaining_ticks.positive?
 

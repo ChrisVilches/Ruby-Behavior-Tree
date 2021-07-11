@@ -6,8 +6,6 @@ module BehaviorTree
     class ForceFailure < DecoratorBase
       protected
 
-      def decorate; end
-
       def status_map
         return status.running! if child.status.running?
 

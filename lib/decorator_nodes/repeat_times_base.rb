@@ -27,7 +27,9 @@ module BehaviorTree
           child.tick!
           break if child.status.running?
         end
+      end
 
+      def ensure_after_tick
         status_map
       end
 

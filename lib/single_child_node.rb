@@ -3,32 +3,22 @@
 module BehaviorTree
   # A node that has a single child (abstract class).
   class SingleChildNodeBase < NodeBase
+    include Validations::SingleChild
     attr_reader :child
 
     def initialize(child)
-      validate_child! child
+      validate_single_child! child
       super()
-      @child = child
+      @child = child.chainable_node
     end
 
-    def tick!
-      super
+    def pre_tick
       @child.tick!
     end
 
     def halt!
       super
       @child.halt!
-    end
-
-    private
-
-    def validate_child!(child)
-      raise InvalidLeafNodeError if child.nil?
-      return if child.is_a?(NodeBase)
-
-      err = "Decorator can only have a #{NodeBase.name} object as a child. Attempted to assign #{child.class}."
-      raise ArgumentError, err
     end
   end
 

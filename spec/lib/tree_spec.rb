@@ -16,7 +16,10 @@ describe BehaviorTree::Tree do
     context 'has argument' do
       context 'argument is tree' do
         let(:child) { BehaviorTree::Tree.new(nop_fail) }
-        it { expect { subject }.to raise_error BehaviorTree::InvalidTreeMainNodeError }
+        it 'safely chains the chainable node, not the tree itself' do
+          # This is explained below in the "describe '.chainable_node'" tests.
+          expect { subject }.to_not raise_error
+        end
       end
     end
   end
@@ -65,7 +68,27 @@ describe BehaviorTree::Tree do
     end
   end
 
-  describe '.concat' do
-    pending
+  describe '.chainable_node' do
+    let(:child) { nop_fail }
+    context 'chaining tree to control flow node' do
+      before { selector << tree }
+      it 'chains the tree in a flattened way' do
+        added_child = selector.instance_variable_get(:@children).last
+        expect(added_child).to eq nop_fail
+      end
+    end
+
+    context 'chaining tree to decorator node' do
+      let(:repeater) { BehaviorTree::Decorators::Repeater.new(tree, 10) }
+      it 'chains the tree in a flattened way' do
+        decorator_child = repeater.instance_variable_get(:@child)
+        expect(decorator_child).to eq nop_fail
+      end
+    end
+
+    context 'chaining tree to another tree' do
+      let(:new_tree) { BehaviorTree::Tree.new(tree) }
+      it { expect(new_tree.child).to eq nop_fail }
+    end
   end
 end

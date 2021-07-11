@@ -6,8 +6,6 @@ module BehaviorTree
     class Inverter < DecoratorBase
       protected
 
-      def decorate; end
-
       def status_map
         return status.running! if child.status.running?
         return status.failure! if child.status.success?

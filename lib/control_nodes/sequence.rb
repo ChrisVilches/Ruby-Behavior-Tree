@@ -3,9 +3,7 @@
 module BehaviorTree
   # A sequence node.
   class Sequence < ControlNodeBase
-    def tick!
-      super
-
+    def on_tick
       tick_each_children do |child|
         return status.running! if child.status.running?
         return status.failure! if child.status.failure?

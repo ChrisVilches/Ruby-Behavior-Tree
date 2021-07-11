@@ -11,18 +11,16 @@ module BehaviorTree
     def initialize(child)
       super(child)
 
-      return if CHILD_VALID_CLASSES.any? { |node_class| child.is_a?(node_class) }
+      return if CHILD_VALID_CLASSES.any? { |node_class| child.chainable_node.is_a?(node_class) }
 
-      raise InvalidTreeMainNodeError, child.class
+      raise InvalidTreeMainNodeError, child.chainable_node.class
     end
 
-    def main_node
+    def chainable_node
       @child
     end
 
-    def tick!
-      super
-
+    def ensure_after_tick
       # Copy the main node status to self.
       self.status = child.status
     end
