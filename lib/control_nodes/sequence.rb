@@ -2,7 +2,7 @@
 
 module BehaviorTree
   # A sequence node.
-  class Sequence < ControlFlowNode
+  class Sequence < ControlNodeBase
     def tick!
       super
 

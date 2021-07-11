@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe BehaviorTree::NodeIterators::AllNodes do
-  subject { BehaviorTree.const_get(:ControlFlowNode).new(traversal_strategy: :all_nodes) }
+  subject { BehaviorTree.const_get(:ControlNodeBase).new(traversal_strategy: :all_nodes) }
 
   describe '.all_nodes' do
     context 'has some children' do

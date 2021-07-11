@@ -2,13 +2,13 @@
 
 # TODO: Is it possible to autoload everything? It seems some files fail due to dependencies
 #       when I use the autoloader I made.
-require_relative './task'
+require_relative './task_base'
 
 module BehaviorTree
   # An empty task that does not do anything.
   # It requires N ticks to complete.
   # It can be set to end with failure.
-  class Nop < Task
+  class Nop < TaskBase
     def initialize(necessary_ticks = 1, completes_with_failure: false)
       raise ArgumentError, 'Should need at least one tick' if necessary_ticks < 1
 

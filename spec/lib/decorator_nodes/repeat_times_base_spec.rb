@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe BehaviorTree::Decorators.const_get(:RepeatTimesBase) do
-  let(:initialize_child_argument) { BehaviorTree.const_get(:Node).new }
+  let(:initialize_child_argument) { BehaviorTree.const_get(:NodeBase).new }
   let(:max) { 1 }
   subject { described_class.new initialize_child_argument, max }
 

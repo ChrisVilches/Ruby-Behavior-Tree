@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative './node'
+require_relative '../node_base'
 
 module BehaviorTree
   # A node that has children (abstract class).
-  class ControlFlowNode < Node
+  class ControlNodeBase < NodeBase
     include NodeIterators::PrioritizeNonSuccess
     include NodeIterators::AllNodes
 
@@ -27,7 +27,7 @@ module BehaviorTree
     end
 
     def halt!
-      raise InvalidLeafNodeError if @children.empty?
+      validate_non_leaf!
 
       super
 
@@ -36,8 +36,12 @@ module BehaviorTree
 
     protected
 
-    def tick_each_children(&block)
+    def validate_non_leaf!
       raise InvalidLeafNodeError if @children.empty?
+    end
+
+    def tick_each_children(&block)
+      validate_non_leaf!
       return enum_for(:tick_each_children) unless block_given?
 
       Enumerator.new do |y|
@@ -57,5 +61,5 @@ module BehaviorTree
     end
   end
 
-  private_constant :ControlFlowNode
+  private_constant :ControlNodeBase
 end

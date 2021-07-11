@@ -3,7 +3,7 @@
 describe BehaviorTree::Nop do
   let(:necessary_ticks) { 1 }
   subject { described_class.new(necessary_ticks) }
-  it { is_expected.to be_a BehaviorTree::Task }
+  it { is_expected.to be_a BehaviorTree::TaskBase }
 
   context 'necessary ticks is 0' do
     let(:necessary_ticks) { 0 }

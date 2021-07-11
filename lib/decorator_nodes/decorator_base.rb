@@ -1,23 +1,13 @@
 # frozen_string_literal: true
 
+require_relative '../single_child_node'
+
 module BehaviorTree
   module Decorators
     # Base class for a decorator node.
-    class DecoratorBase < Node
-      attr_reader :child
-
-      def initialize(child_)
-        super()
-        self.child = child_
-      end
-
-      def child=(child)
-        validate_child!(child)
-        @child = child
-      end
-
+    class DecoratorBase < SingleChildNodeBase
       def tick!
-        raise InvalidLeafNodeError if child.nil?
+        super
 
         unless should_tick?
           status.failure!
@@ -30,6 +20,8 @@ module BehaviorTree
       end
 
       def halt!
+        super
+
         @child.halt!
         status_map
       end
@@ -48,15 +40,6 @@ module BehaviorTree
 
       def should_tick?
         true
-      end
-
-      private
-
-      def validate_child!(child)
-        return if child.is_a?(Node)
-
-        err = "Decorator can only have a #{Node.name} object as a child. Attempted to assign #{child.class}."
-        raise ArgumentError, err
       end
     end
 

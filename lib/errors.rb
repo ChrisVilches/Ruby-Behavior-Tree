@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: Should errors be private and scoped to the class that raises them?
 module BehaviorTree
   # Exception for when the children traversal strategy is incorrect.
   class IncorrectTraversalStrategyError < StandardError

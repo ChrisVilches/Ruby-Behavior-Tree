@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe BehaviorTree.const_get(:ControlFlowNode) do
+describe BehaviorTree.const_get(:ControlNodeBase) do
   let(:traversal_strategy) { :all_nodes }
   subject { described_class.new([], traversal_strategy: traversal_strategy) }
   let(:nops) { [BehaviorTree::Nop.new(1), BehaviorTree::Nop.new(2)] }

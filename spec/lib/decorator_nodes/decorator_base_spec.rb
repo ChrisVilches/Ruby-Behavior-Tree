@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe BehaviorTree::Decorators.const_get(:DecoratorBase) do
-  let(:child) { BehaviorTree.const_get(:Node).new }
+  let(:child) { BehaviorTree.const_get(:NodeBase).new }
   subject { described_class.new child }
 
   describe '.initialize' do

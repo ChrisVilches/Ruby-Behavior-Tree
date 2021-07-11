@@ -2,7 +2,7 @@
 
 module BehaviorTree
   # A node (abstract class).
-  class Node
+  class NodeBase
     attr_reader :status, :tick_count
 
     def initialize
@@ -29,5 +29,5 @@ module BehaviorTree
     end
   end
 
-  private_constant :Node
+  private_constant :NodeBase
 end

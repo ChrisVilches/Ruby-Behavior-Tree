@@ -2,7 +2,7 @@
 
 module BehaviorTree
   # A selector node.
-  class Selector < ControlFlowNode
+  class Selector < ControlNodeBase
     def tick!
       super
 

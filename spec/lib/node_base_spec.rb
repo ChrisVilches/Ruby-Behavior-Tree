@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-describe BehaviorTree.const_get(:Node) do
+describe BehaviorTree.const_get(:NodeBase) do
   subject { described_class.new }
   it { is_expected.to respond_to :tick! }
   it { is_expected.to respond_to :halt! }
 
   describe '.status=' do
-    let(:other_node) { BehaviorTree.const_get(:Node).new }
+    let(:other_node) { BehaviorTree.const_get(:NodeBase).new }
     before { other_node.status.failure! }
     it { is_expected.to be_success }
     it { expect(other_node).to be_failure }
