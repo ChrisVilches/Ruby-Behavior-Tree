@@ -3,15 +3,32 @@
 module BehaviorTree
   # Root node of the tree.
   # This is the class that must be instantiated by the user.
-  class Tree
+  class Tree < SingleChildNodeBase
+    CHILD_VALID_CLASSES = [
+      Decorators::DecoratorBase, ControlNodeBase, TaskBase
+    ].freeze
+
     def initialize(child)
-      @child = child
+      super(child)
+
+      return if CHILD_VALID_CLASSES.any? { |node_class| child.is_a?(node_class) }
+
+      raise InvalidTreeMainNodeError, child.class
+    end
+
+    def main_node
+      @child
     end
 
     def tick!
+      super
+
+      # Copy the main node status to self.
+      self.status = child.status
     end
 
     def validate_tree!
+      raise NotImplementedError
     end
   end
 end

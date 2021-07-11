@@ -12,10 +12,17 @@ module BehaviorTree
     end
   end
 
+  # Exception raised when the main node of a tree is of invalid type.
+  class InvalidTreeMainNodeError < StandardError
+    def initialize(node_type)
+      super "Main node of a tree cannot be of type #{node_type}. Valid types are: #{Tree::CHILD_VALID_CLASSES}"
+    end
+  end
+
   # Exception for control flow nodes without children.
   class InvalidLeafNodeError < StandardError
     def initialize
-      super 'This node cannot be a leaf node. Insert children before ticking.'
+      super 'This node cannot be a leaf node.'
     end
   end
 

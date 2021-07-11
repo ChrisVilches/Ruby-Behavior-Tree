@@ -7,14 +7,12 @@ module BehaviorTree
     # Base class for a decorator node.
     class DecoratorBase < SingleChildNodeBase
       def tick!
-        super
-
         unless should_tick?
           status.failure!
           return
         end
 
-        child.tick!
+        super
         decorate
         status_map
       end
@@ -22,27 +20,31 @@ module BehaviorTree
       def halt!
         super
 
-        @child.halt!
         status_map
       end
 
       protected
 
-      # TODO: Comment
-      def decorate
-        raise NotImplementedError
-      end
+      # Decorate behavior. Retry, repeat, etc.
+      # Leave empty if there's no extra behavior to add.
+      # Default behavior is to do nothing additional.
+      # @return [void]
+      def decorate; end
 
-      # TODO: Comment
+      # This method must change the self node status in function
+      # of the child status. The default behavior is to copy its status.
+      # @return [void]
       def status_map
         self.status = child.status
       end
 
+      # Whether the child node should be ticked or not.
+      # Default value is true. By overriding this, it's possible to create
+      # conditional decorators.
+      # @return [boolean]
       def should_tick?
         true
       end
     end
-
-    private_constant :DecoratorBase
   end
 end

@@ -12,8 +12,6 @@ module BehaviorTree
 
     def tick!
       status.running!
-      # TODO: At the moment, this is only used in tests, and all nodes tested are tasks.
-      #       Modify it so that only tasks do this?
       @tick_count += 1
     end
 
