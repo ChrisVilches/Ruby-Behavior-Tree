@@ -18,6 +18,7 @@ module BehaviorTree
         super
 
         # TODO: When is halt! executed in a decorator?
+        #       Note that removing this whole method, does trigger some errors in RSpec.
         status_map
       end
 
