@@ -38,6 +38,10 @@ module BehaviorTree
 
     protected
 
+    def on_tick
+      raise NotImplementedError, 'Must implement control logic'
+    end
+
     def validate_non_leaf!
       raise InvalidLeafNodeError if @children.empty?
     end
