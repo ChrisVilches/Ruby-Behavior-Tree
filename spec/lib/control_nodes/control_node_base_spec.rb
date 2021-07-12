@@ -18,9 +18,7 @@ module TestControlNodes
     def on_tick; end
   end
 
-  class AllNodesSelector < BehaviorTree::Selector
-    children_traversal_strategy :all_nodes
-  end
+  class MySelector < BehaviorTree::Selector; end
 end
 
 describe BehaviorTree.const_get(:ControlNodeBase) do
@@ -31,7 +29,8 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
       it do
         expect do
           TestControlNodes::StrategyNotExists.new(nops)
-        end.to raise_error(NoMethodError).with_message(/does not exist/)
+        end.to raise_error(BehaviorTree::IncorrectTraversalStrategyError)
+          .with_message(/Attempted to use strategy: not_exists\./)
       end
     end
   end
@@ -45,12 +44,16 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
       end
     end
 
-    context 'child class inherits from selector' do
-      subject { TestControlNodes::AllNodesSelector.new(nops) }
+    context 'child class inherits from selector and has no explicitly defined traversal strategy' do
+      subject { TestControlNodes::MySelector.new(nops) }
       it 'inherits on_tick implementation (does not raise NotImplementedError)' do
         expect { subject.send :on_tick }.to_not raise_error
       end
-      it { expect(subject.class.traversal_strategy).to eq :all_nodes }
+
+      it 'checks entire class hierarchy (not just parent) to find a default traversal_strategy' do
+        expect(subject.class.traversal_strategy).to eq :prioritize_running
+        expect(subject.send(:traversal_strategy)).to eq :prioritize_running
+      end
     end
   end
 

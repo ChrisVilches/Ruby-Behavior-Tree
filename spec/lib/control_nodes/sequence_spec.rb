@@ -80,7 +80,7 @@ describe BehaviorTree::Sequence do
         # Trace:
         # Tick #1: Tick first node (running, so stop).
         # Tick #2: Tick first node (success, so continue), tick second node.
-        # Tick #3: Start from non-success nodes, so tick only second node.
+        # Tick #3: Start from running nodes, so tick only second node.
         it { is_expected.to have_children_ticked_times [2, 2] }
 
         context 'nop operation ends with failure' do

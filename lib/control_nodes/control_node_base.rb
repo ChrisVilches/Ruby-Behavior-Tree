@@ -9,20 +9,11 @@ module BehaviorTree
     include NodeIterators::AllNodes
 
     def initialize(children = [])
-      unless respond_to?(traversal_strategy, true)
-        err = "Iteration strategy named '#{traversal_strategy}' does not exist."
-        raise NoMethodError, err
-      end
+      raise IncorrectTraversalStrategyError, nil.class if traversal_strategy.nil?
+      raise IncorrectTraversalStrategyError, traversal_strategy unless respond_to?(traversal_strategy, true)
 
       super()
       @children = children
-    end
-
-    def traversal_strategy
-      # NOTE: This means that a long chain of inheritance would not be able to provide
-      #       a default traversal_strategy value. It'd be necessary to traverse the
-      #       entire class hierarchy to find a present value.
-      self.class.traversal_strategy || self.class.superclass.traversal_strategy
     end
 
     def <<(child)
@@ -65,13 +56,28 @@ module BehaviorTree
       end.each(&block)
     end
 
+    private
+
+    def traversal_strategy
+      self.class.traversal_strategy
+    end
+
     # Keep it simple, because it's executed everytime it ticks.
     def validate_enum!(enum)
       raise IncorrectTraversalStrategyError, enum unless enum.respond_to? :each
     end
 
     class << self
-      attr_reader :traversal_strategy
+      def traversal_strategy
+        @traversal_strategy ||= ancestors.find do |constant|
+          next if constant == self
+          next unless constant.is_a? Class
+          next unless constant.respond_to? :traversal_strategy
+          next if constant.traversal_strategy.nil?
+
+          break constant.traversal_strategy
+        end
+      end
 
       private
 
