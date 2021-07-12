@@ -40,5 +40,19 @@ describe BehaviorTree::Builder do
     context 'OO tree contains DSL tree' do
       it { expect(oo_tree_with_chained_dsl_tree.size).to eq 9 }
     end
+
+    context 'chain used in the first node' do
+      let(:tree) do
+        tree = BehaviorTree::Builder.build { seq { t } }
+        BehaviorTree::Builder.build { chain tree }
+      end
+      it { expect(tree.size).to eq 3 }
+    end
+
+    context 'tree to be chained is not valid tree' do
+      it do
+        expect { BehaviorTree::Builder.build { chain nil } }.to raise_error BehaviorTree::DSLStandardError
+      end
+    end
   end
 end
