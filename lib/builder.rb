@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# TODO: Class name and file name differ.
+require_relative './concerns/dsl/spell_checker'
+require_relative './concerns/dsl/initial_config'
+
 module BehaviorTree
   # DSL for building a tree.
   class Builder
