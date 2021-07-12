@@ -20,11 +20,25 @@ describe BehaviorTree::Decorators::Condition do
     end
 
     context 'lambda given' do
-      subject { described_class.new(child, -> {}) }
+      let(:fn) { -> {} }
+      subject { described_class.new child, fn }
       it { expect { subject }.to_not raise_error }
       context 'block also given' do
-        let(:invalid) { described_class.new(child, -> {}) { :empty_block } }
+        let(:invalid) { described_class.new(child, fn) { :empty_block } }
         it { expect { invalid }.to raise_error(ArgumentError).with_message(/not both/) }
+      end
+
+      # These lambdas trigger an error if the data IS defined, so by catching those
+      # errors (with specific message), it validates that the lambda's are executed, and
+      # the data is passed properly.
+      context 'given lambda with only context' do
+        let(:fn) { ->(context) { raise 'context defined' if context[:a] == 5 } }
+        it { expect { subject.tick! }.to raise_error.with_message('context defined') }
+      end
+
+      context 'given lambda with context and node' do
+        let(:fn) { ->(_context, node) { raise 'condition node defined' if node.is_a?(described_class) } }
+        it { expect { subject.tick! }.to raise_error.with_message('condition node defined') }
       end
     end
 
@@ -37,8 +51,6 @@ describe BehaviorTree::Decorators::Condition do
       end
     end
   end
-
-  pending 'Test the argument passing according to lambda arity'
 
   describe '.tick!' do
     context 'condition that prevents ticking after a few ticks' do
