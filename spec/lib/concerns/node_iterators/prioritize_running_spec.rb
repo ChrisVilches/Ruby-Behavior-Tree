@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-describe BehaviorTree::NodeIterators::PrioritizeNonSuccess do
+describe BehaviorTree::NodeIterators::PrioritizeRunning do
   subject { BehaviorTree.const_get(:ControlNodeBase).new }
 
-  describe '.prioritize_non_success' do
+  describe '.prioritize_running' do
     context 'has some children' do
       let(:nops) { [BehaviorTree::Nop.new, BehaviorTree::Nop.new] }
       before { subject << nops }
-      it { expect(subject.prioritize_non_success).to be_instance_of Enumerator }
-      it { expect(subject.prioritize_non_success.to_a).to eq nops }
-      it { expect(subject.prioritize_non_success.count).to eq 2 }
-      it { expect(subject.prioritize_non_success.map(&:itself)).to eq nops }
+      it { expect(subject.prioritize_running).to be_instance_of Enumerator }
+      it { expect(subject.prioritize_running.to_a).to eq nops }
+      it { expect(subject.prioritize_running.count).to eq 2 }
+      it { expect(subject.prioritize_running.map(&:itself)).to eq nops }
 
       it 'can chain each' do
         values = []
-        subject.prioritize_non_success.each { |v| values << v }
+        subject.prioritize_running.each { |v| values << v }
         expect(values).to eq nops
       end
 
@@ -25,8 +25,8 @@ describe BehaviorTree::NodeIterators::PrioritizeNonSuccess do
         end
 
         # Skip first node.
-        it { expect(subject.prioritize_non_success.count).to eq 1 }
-        it { expect(subject.prioritize_non_success.first).to eq nops[1] }
+        it { expect(subject.prioritize_running.count).to eq 1 }
+        it { expect(subject.prioritize_running.first).to eq nops[1] }
       end
     end
   end

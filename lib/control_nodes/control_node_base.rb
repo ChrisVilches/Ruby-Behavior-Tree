@@ -5,7 +5,7 @@ require_relative '../node_base'
 module BehaviorTree
   # A node that has children (abstract class).
   class ControlNodeBase < NodeBase
-    include NodeIterators::PrioritizeNonSuccess
+    include NodeIterators::PrioritizeRunning
     include NodeIterators::AllNodes
 
     def initialize(children = [])
@@ -80,6 +80,6 @@ module BehaviorTree
       end
     end
 
-    children_traversal_strategy :prioritize_non_success
+    children_traversal_strategy :prioritize_running
   end
 end

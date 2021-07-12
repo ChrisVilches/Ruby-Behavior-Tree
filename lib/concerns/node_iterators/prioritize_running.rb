@@ -4,8 +4,8 @@ module BehaviorTree
   module NodeIterators
     # If there's at least one node with 'running' status, then iterate starting from there, in order.
     # Else, iterate all nodes.
-    module PrioritizeNonSuccess
-      def prioritize_non_success
+    module PrioritizeRunning
+      def prioritize_running
         idx = @children.find_index { |child| child.status.running? }.to_i
 
         Enumerator.new do |y|
