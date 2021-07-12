@@ -1,18 +1,59 @@
 # frozen_string_literal: true
 
+module TestControlNodes
+  class OnTickNotImplemented < BehaviorTree::ControlNodeBase; end
+
+  class StrategyNotExists < BehaviorTree::ControlNodeBase
+    children_traversal_strategy :not_exists
+    def on_tick; end
+  end
+
+  class StrategyToString < BehaviorTree::ControlNodeBase
+    children_traversal_strategy :to_s
+    def on_tick; end
+  end
+
+  class AllNodes < BehaviorTree::ControlNodeBase
+    children_traversal_strategy :all_nodes
+    def on_tick; end
+  end
+end
+
 describe BehaviorTree.const_get(:ControlNodeBase) do
-  let(:traversal_strategy) { :all_nodes }
-  subject { described_class.new([], traversal_strategy: traversal_strategy) }
   let(:nops) { [BehaviorTree::Nop.new(1), BehaviorTree::Nop.new(2)] }
-  before { subject << nops }
 
   describe '.initialize' do
     context 'traversal strategy is wrong' do
-      it { expect { described_class.new([], traversal_strategy: :dont_exist) }.to raise_error NoMethodError }
+      it do
+        expect do
+          TestControlNodes::StrategyNotExists.new(nops)
+        end.to raise_error(NoMethodError).with_message(/does not exist/)
+      end
+    end
+  end
+
+  describe '.on_tick' do
+    context 'child class has not implemented on_tick method' do
+      it do
+        expect do
+          TestControlNodes::OnTickNotImplemented.new(nops).tick!
+        end.to raise_error(NotImplementedError).with_message('Must implement control logic')
+      end
+    end
+  end
+
+  describe '.validate_enum!' do
+    subject { TestControlNodes::StrategyToString.new(nops) }
+    it do
+      expect do
+        subject.send(:tick_each_children) { :empty_block }
+      end.to raise_error BehaviorTree::IncorrectTraversalStrategyError
     end
   end
 
   describe '.tick_each_children' do
+    subject { TestControlNodes::AllNodes.new(nops) }
+
     it { expect(subject.send(:tick_each_children)).to be_instance_of Enumerator }
     it { expect(subject.send(:tick_each_children).each).to be_instance_of Enumerator }
     it 'can chain filter' do
@@ -22,10 +63,11 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
       expect(filtered).to eq [nops[1]]
     end
     it 'returns the array when using a block' do
-      expect(subject.send(:tick_each_children) { |x| x }).to eq nops
+      expect(subject.send(:tick_each_children) { :empty_block }).to eq nops
     end
+
     context 'having a block' do
-      before { 10.times { subject.send(:tick_each_children) { |x| x } } }
+      before { 10.times { subject.send(:tick_each_children) { :empty_block } } }
       it { is_expected.to have_children_ticked_times [10, 10] }
     end
 
@@ -33,21 +75,18 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
       before { 10.times { subject.send(:tick_each_children) } }
       it { is_expected.to have_children_ticked_times [0, 0] }
     end
-
     context 'without children' do
       let(:nops) { [] }
-      it do
-        expect { subject.send(:tick_each_children) { |x| x } }.to raise_error BehaviorTree::InvalidLeafNodeError
+      context 'with block' do
+        it do
+          expect do
+            subject.send(:tick_each_children) { :empty_block }
+          end.to raise_error BehaviorTree::InvalidLeafNodeError
+        end
       end
-    end
-  end
-
-  describe '.validate_enum!' do
-    let(:traversal_strategy) { :to_s }
-    it do
-      expect do
-        subject.send(:tick_each_children) { |x| x }
-      end.to raise_error BehaviorTree::IncorrectTraversalStrategyError
+      context 'without block' do
+        it { expect { subject.send(:tick_each_children) }.to_not raise_error }
+      end
     end
   end
 end
