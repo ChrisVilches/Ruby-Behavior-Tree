@@ -6,21 +6,13 @@ module BehaviorTree
   module Decorators
     # Base class for a decorator node.
     class DecoratorBase < SingleChildNodeBase
-      def prevent_tick?
-        return false if should_tick?
-
-        status.failure!
-        true
-      end
-
       def on_tick
         decorate
       end
 
-      # TODO: Why RSpec doesn't fail even with this code removed?
-      # def ensure_after_tick
-      #   status_map
-      # end
+      def ensure_after_tick
+        status_map
+      end
 
       def halt!
         super
@@ -42,14 +34,6 @@ module BehaviorTree
       # @return [void]
       def status_map
         self.status = child.status
-      end
-
-      # Whether the child node should be ticked or not.
-      # Default value is true. By overriding this, it's possible to create
-      # conditional decorators.
-      # @return [boolean]
-      def should_tick?
-        true
       end
     end
   end

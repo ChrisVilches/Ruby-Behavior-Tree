@@ -35,9 +35,9 @@ module BehaviorTree
     end
 
     def tick!
-      prevented = prevent_tick?.is_a?(TrueClass)
+      @tick_prevented = !should_tick?
 
-      unless prevented
+      unless @tick_prevented
         status.running!
         pre_tick
         on_tick
@@ -52,8 +52,10 @@ module BehaviorTree
       self
     end
 
-    def prevent_tick?
-      false
+    # If this value is false, @tick_prevented will be set to true, which can be handled in other
+    # tick callbacks.
+    def should_tick?
+      true
     end
 
     def after_tick; end

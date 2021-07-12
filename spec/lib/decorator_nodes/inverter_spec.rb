@@ -4,6 +4,13 @@ describe BehaviorTree::Decorators::Inverter do
   let(:child) { BehaviorTree::Nop.new }
   subject { described_class.new child }
 
+  # TODO: This doesn't test the entire behavior of tick!.
+  #       I had commented out 'ensure_after_tick' (from DecoratorBase), which executes
+  #       'status_map', which triggered an error, but this spec didn't detect it.
+  #
+  #       That error is now covered in 'rspec spec/dsl_tree_builder/root_node_has_inverter_spec.rb'
+  #       but it'd be great to have it here too.
+
   describe '.status_map' do
     before { child.status.send("#{child_returned_status}!") }
     before { subject.send :status_map }
