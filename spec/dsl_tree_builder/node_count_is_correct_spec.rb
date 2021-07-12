@@ -10,7 +10,7 @@ describe BehaviorTree::Builder do
   end
 
   let(:tree2) do
-    # TODO: I wanted to use tree1 defined above, but
+    # NOTE: I wanted to use tree1 defined above, but
     #       the scope of the block doesn't find it.
     #       But it seems this only happens in RSpec.
     another_tree = BehaviorTree::Builder.build do

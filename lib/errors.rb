@@ -48,4 +48,11 @@ module BehaviorTree
       super err.join ' '
     end
   end
+
+  # Exception for misuse of the DSL builder.
+  class DSLStandardError < StandardError
+    def initialize(message)
+      super "Cannot build tree (DSL Builder): #{message}"
+    end
+  end
 end

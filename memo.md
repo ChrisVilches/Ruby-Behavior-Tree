@@ -11,3 +11,7 @@ https://docs.unrealengine.com/4.26/en-US/InteractiveExperiences/ArtificialIntell
 ## Task-only decorators
 
 There might be the need to implement decorators that can only have a task child (as opposed to having a selector/sequence node as a child, etc). How can I implement this? I can probably add just a simple check to make sure the decorator has a task node, but I'd need to think how to make it elegant.
+
+## Rename TaskBase to Task
+
+Consider renaming it, because this class will be used by users (programmers), and the name is a bit long.

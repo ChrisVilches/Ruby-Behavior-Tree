@@ -15,7 +15,7 @@ module BehaviorTree
         stack_children_from_block(block)
         tree_main_node = @stack.pop.first
 
-        raise 'Checking stack is empty (should be)' unless @stack.empty?
+        raise 'Tree structure is incorrect. Probably a problem with the library.' unless @stack.empty?
 
         BehaviorTree::Tree.new tree_main_node
       end
@@ -45,7 +45,9 @@ module BehaviorTree
       def chain(node)
         # TODO: If I don't add this, and I chain something like a 'nil', it still works,
         #       but crashes later. Maybe the validations in control-flow nodes are lacking.
-        raise "Chain must be used to chain a node or subtree, not a #{node.class}" unless node.is_a?(NodeBase)
+        unless node.is_a?(NodeBase)
+          raise DSLStandardError, "The 'chain' keyword must be used to chain a node or subtree, not a #{node.class}"
+        end
 
         stack node
       end
@@ -76,42 +78,11 @@ module BehaviorTree
         stack_children_from_block(block)
 
         final_args = [@stack.pop] + args # @stack.pop is already an Array
-
         final_args.flatten! unless children == :multiple
-
-        stack node_class.new(*final_args, &block)
+        stack node_class.new(*final_args)
       end
 
       alias t task
     end
   end
 end
-
-tree = BehaviorTree::Builder.build do
-  inverter do
-    seq do
-      t do
-        status.success!
-      end
-      force_failure do
-        t do
-          :empty
-        end
-      end
-    end
-  end
-end
-
-puts tree.class
-raise 'Resulting object is not a tree' unless tree.is_a?(BehaviorTree::Tree)
-
-initial_context = { a: 100 }
-
-tree.context = initial_context
-
-100.times do
-  tree.tick!
-end
-
-puts "Final contest: #{tree.context}"
-puts "Final tree status: #{tree.status.inspect}"
