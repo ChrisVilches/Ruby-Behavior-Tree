@@ -1,0 +1,45 @@
+dsl:
+  nodes:
+    -
+      keyword:    re_try
+      class_name: BehaviorTree::Decorators::Retry
+      children:   single
+    -
+      keyword:    inverter
+      class_name: BehaviorTree::Decorators::Inverter
+      children:   single
+    -
+      keyword:    repeater
+      class_name: BehaviorTree::Decorators::Repeater
+      children:   single
+    -
+      keyword:    force_failure
+      class_name: BehaviorTree::Decorators::ForceFailure
+      children:   single
+    -
+      keyword:    force_success
+      class_name: BehaviorTree::Decorators::ForceSuccess
+      children:   single
+    -
+      keyword:    condition
+      class_name: BehaviorTree::Decorators::Condition
+      children:   single
+    -
+      keyword:    sequence
+      class_name: BehaviorTree::Sequence
+      children:   multiple
+    -
+      keyword:    selector
+      class_name: BehaviorTree::Selector
+      children:   multiple
+    -
+      keyword:    task
+      class_name: BehaviorTree::TaskBase
+      children:   none
+  aliases:
+    sequence:  seq
+    selector:  sel
+    repeater:  rep
+    inverter:  inv
+    condition: cond
+    task:      t

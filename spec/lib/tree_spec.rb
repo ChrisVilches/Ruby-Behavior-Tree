@@ -7,6 +7,7 @@ describe BehaviorTree::Tree do
   before { selector << [nop_fail, nop_success] }
   let(:tree) { BehaviorTree::Tree.new(child) }
   subject { tree }
+
   describe '.new' do
     context 'empty argument' do
       let(:child) { nil }

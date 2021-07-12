@@ -55,4 +55,11 @@ module BehaviorTree
       super "Cannot build tree (DSL Builder): #{message}"
     end
   end
+
+  # Exception for when trying to register a DSL keyword that already exists.
+  class RegisterDSLNodeAlreadyExistsError < StandardError
+    def initialize(node_type)
+      super "Cannot register node '#{node_type}', it already exists."
+    end
+  end
 end

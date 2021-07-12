@@ -9,6 +9,10 @@ describe BehaviorTree::Builder do
     end
   end
 
+  before :all do
+    BehaviorTree::Builder.register(:nop, BehaviorTree::Nop, children: :none)
+  end
+
   let(:tree2) do
     # NOTE: I wanted to use tree1 defined above, but
     #       the scope of the block doesn't find it.

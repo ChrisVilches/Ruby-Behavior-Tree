@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+# TODO: Class name and file name differ.
 module BehaviorTree
   # DSL for building a tree.
   class Builder
+    @node_type_mapping = {}
     class << self
       include Dsl::SpellChecker
+      include Dsl::InitialConfig
 
       def build(&block)
         # Stack of lists. When a method like 'sequence' is executed, the resulting
@@ -20,18 +23,39 @@ module BehaviorTree
         BehaviorTree::Tree.new tree_main_node
       end
 
-      private
+      # Don't validate class_name, because in some situations the user wants it to be evaluated
+      # in runtime.
+      def register(node_name, class_name, children: :none)
+        valid_children_values = %i[none single multiple]
+        raise "Children value must be in: #{valid_children_values}" unless valid_children_values.include?(children)
 
-      def nop(necessary_ticks)
-        stack BehaviorTree::Nop.new(necessary_ticks)
+        node_name = node_name.to_sym
+        raise RegisterDSLNodeAlreadyExistsError, node_name if @node_type_mapping.key?(node_name)
+
+        @node_type_mapping[node_name] = {
+          class:    class_name,
+          children: children
+        }
       end
+
+      def register_alias(original, alias_key)
+        unless @node_type_mapping.key?(original)
+          raise "Cannot register alias for '#{original}', since it doesn't exist."
+        end
+        raise RegisterDSLNodeAlreadyExistsError, alias_key if @node_type_mapping.key?(alias_key)
+        raise 'Alias key cannot be empty' if alias_key.to_s.empty?
+
+        raise 'we have a problem here dude' if original == alias_key
+
+        @node_type_mapping[original][:alias] = alias_key
+        @node_type_mapping[alias_key] = @node_type_mapping[original].dup
+        @node_type_mapping[alias_key][:alias] = original
+      end
+
+      private
 
       def stack(obj)
         @stack.last << obj
-      end
-
-      def task(&block)
-        stack BehaviorTree::TaskBase.new(&block)
       end
 
       # Execute @stack.pop after executing this method to
@@ -68,24 +92,36 @@ module BehaviorTree
         nil
       end
 
-      def method_missing(name, *args, &block)
-        # Find by name or alias.
-        node_class_name = NODE_TYPE_MAPPING.dig name, :class
-
-        node_class = constantize(node_class_name)
-
-        raise_node_type_not_exists name if node_class.nil?
-
-        children = NODE_TYPE_MAPPING.dig(name.to_sym, :children)
-
+      def dynamic_method_with_children(node_class, children, args, block)
         stack_children_from_block(block)
-
         final_args = [@stack.pop] + args # @stack.pop is already an Array
         final_args.flatten! unless children == :multiple
         stack node_class.new(*final_args)
       end
 
-      alias t task
+      def dynamic_method_leaf(node_class, args, block)
+        stack node_class.new(*args, &block)
+      end
+
+      def method_missing(name, *args, &block)
+        # Find by name or alias.
+        node_class_name = @node_type_mapping.dig name, :class
+
+        node_class = constantize(node_class_name)
+
+        raise_node_type_not_exists name if node_class.nil?
+
+        children = @node_type_mapping.dig(name.to_sym, :children)
+
+        # Nodes that have children are executed differently from leaf nodes.
+        if children == :none
+          dynamic_method_leaf(node_class, args, block)
+        else
+          dynamic_method_with_children(node_class, children, args, block)
+        end
+      end
     end
+
+    BehaviorTree::Builder.initial_config
   end
 end
