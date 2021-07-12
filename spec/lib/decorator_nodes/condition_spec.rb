@@ -40,6 +40,18 @@ describe BehaviorTree::Decorators::Condition do
         let(:fn) { ->(_context, node) { raise 'condition node defined' if node.is_a?(described_class) } }
         it { expect { subject.tick! }.to raise_error.with_message('condition node defined') }
       end
+
+      context 'using a normal block (with an impossible condition)' do
+        subject { described_class.new(child) { context[:a] == 100 } }
+        before { subject.tick! }
+        it { is_expected.to be_failure }
+      end
+
+      context 'using a normal block (with a successful condition)' do
+        subject { described_class.new(child) { context[:a] == 5 } }
+        before { subject.tick! }
+        it { is_expected.to be_running } # NOTE: Copies the child status (task always sets it to running).
+      end
     end
 
     context 'proc given' do
