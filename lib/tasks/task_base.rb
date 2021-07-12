@@ -11,6 +11,10 @@ module BehaviorTree
       @task_block = block
     end
 
+    def void?
+      !@task_block
+    end
+
     def on_tick
       eval 'self', @task_block.binding, __FILE__, __LINE__
       instance_eval(&@task_block)
