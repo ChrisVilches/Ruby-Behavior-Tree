@@ -35,7 +35,7 @@ describe BehaviorTree::Builder do
   subject { tree }
 
   describe '.register' do
-    context 'registered a new control node' do
+    context 'a new control node' do
       before :all do
         described_class.register(
           :tick_only_second_node,
@@ -47,6 +47,40 @@ describe BehaviorTree::Builder do
       before { 5.times { subject.tick! } }
 
       it { expect(tree.context).to eq({ a: 0, b: 5, c: 0 }) }
+    end
+
+    context 'already existing node' do
+      it do
+        expect do
+          described_class.register(:inv, Array, children: :single)
+        end.to raise_error BehaviorTree::RegisterDSLNodeAlreadyExistsError
+      end
+    end
+  end
+
+  describe '.register_alias' do
+    context 'original key does not exist' do
+      it { expect { BehaviorTree::Builder.register_alias(:not_exists, :alias) }.to raise_error RuntimeError }
+    end
+
+    context 'original key exists' do
+      it { expect { BehaviorTree::Builder.register_alias(:force_success, :always_succeed) }.to_not raise_error }
+      it do
+        mapping = BehaviorTree::Builder.instance_variable_get :@node_type_mapping
+        expect(mapping[:always_succeed][:alias]).to eq :force_success
+        expect(mapping[:force_success][:alias]).to eq :always_succeed
+      end
+    end
+  end
+
+  describe '.respond_to_missing?' do
+    context 'key has not been added' do
+      it { expect(BehaviorTree::Builder).to_not respond_to :always_fail }
+    end
+
+    context 'key has been added' do
+      before { BehaviorTree::Builder.register_alias(:force_failure, :always_fail) }
+      it { expect(BehaviorTree::Builder).to respond_to :always_fail }
     end
   end
 end

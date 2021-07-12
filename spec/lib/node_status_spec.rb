@@ -19,6 +19,12 @@ describe BehaviorTree.const_get(:NodeStatus) do
     it { expect { subject }.to raise_error BehaviorTree::IncorrectStatusValueError }
   end
 
+  describe '==' do
+    it { expect(described_class.new(described_class::FAILURE)).to eq described_class.new(described_class::FAILURE) }
+    it { expect(described_class.new(described_class::FAILURE)).to_not eq described_class.new(described_class::RUNNING) }
+    it { expect(described_class.new(described_class::FAILURE)).to_not eq described_class.new(described_class::SUCCESS) }
+  end
+
   describe '.set' do
     let(:value) { described_class::SUCCESS }
     it 'changes the value' do

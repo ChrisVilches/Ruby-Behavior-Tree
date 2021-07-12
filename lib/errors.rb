@@ -15,7 +15,7 @@ module BehaviorTree
   # Exception raised when the main node of a tree is of invalid type.
   class InvalidTreeMainNodeError < StandardError
     def initialize(node_type)
-      super "Main node of a tree cannot be of type #{node_type}. Valid types are: #{Tree::CHILD_VALID_CLASSES}"
+      super "Cannot chain #{node_type} to the root node of a tree. Valid types are: #{Tree::CHILD_VALID_CLASSES}."
     end
   end
 

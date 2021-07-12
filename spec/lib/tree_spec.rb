@@ -22,6 +22,10 @@ describe BehaviorTree::Tree do
           expect { subject }.to_not raise_error
         end
       end
+
+      context 'invalid main node' do
+        it { expect { described_class.new([1, 2]) }.to raise_error BehaviorTree::InvalidTreeMainNodeError }
+      end
     end
   end
 

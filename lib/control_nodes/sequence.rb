@@ -6,11 +6,19 @@ module BehaviorTree
     def on_tick
       tick_each_children do |child|
         return status.running! if child.status.running?
-        return status.failure! if child.status.failure?
+
+        if child.status.failure?
+          halt!
+
+          # Halt, but set success only to children, not to self.
+          # Self status must be overriden to failure.
+          status.failure!
+          return
+        end
       end
 
+      # Both self and children have the status set to success.
       halt!
-      status.success!
     end
   end
 end

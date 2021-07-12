@@ -47,8 +47,6 @@ module BehaviorTree
         raise RegisterDSLNodeAlreadyExistsError, alias_key if @node_type_mapping.key?(alias_key)
         raise 'Alias key cannot be empty' if alias_key.to_s.empty?
 
-        raise 'we have a problem here dude' if original == alias_key
-
         @node_type_mapping[original][:alias] = alias_key
         @node_type_mapping[alias_key] = @node_type_mapping[original].dup
         @node_type_mapping[alias_key][:alias] = original
@@ -77,8 +75,8 @@ module BehaviorTree
         stack node
       end
 
-      def respond_to_missing?
-        true
+      def respond_to_missing?(method_name, _include_private)
+        @node_type_mapping.key? method_name
       end
 
       # Convert a class name with namespace into a constant.

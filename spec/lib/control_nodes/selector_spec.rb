@@ -6,6 +6,10 @@ describe BehaviorTree::Selector do
   let(:nop3) { BehaviorTree::Nop.new(3, completes_with_failure: completes_with_failure) }
   let(:children) { subject.send(:children) }
   subject { described_class.new(children) }
+  let(:nop_success) { BehaviorTree::Nop.new(2, completes_with_failure: false) }
+  let(:nop_fail1) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
+  let(:nop_fail2) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
+  let(:nop_fail3) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
 
   describe '.tick!' do
     context 'has one child (requires 2 ticks)' do
@@ -68,14 +72,84 @@ describe BehaviorTree::Selector do
         context 'nop operation ends with failure' do
           let(:completes_with_failure) { true }
           it { is_expected.to be_running }
-          it { is_expected.to have_children_statuses %i[running running] }
+          it { is_expected.to have_children_statuses %i[failure running] }
 
           # Trace:
           # Tick #1: Tick first node (running, so stop).
           # Tick #2: Tick first node (failure, so continue), tick second node.
-          # Tick #3: Start from non-success nodes, so tick first one (running, so stop).
-          it { is_expected.to have_children_ticked_times [3, 1] }
+          # Tick #3: Start from running nodes, so tick second one (running, so stop).
+          it { is_expected.to have_children_ticked_times [2, 2] }
         end
+      end
+    end
+
+    context 'no operation is selected (all fail)' do
+      # TODO: Prevent errors due to inability to deep-clone. Must refactor.
+      let(:children) { [nop_fail1, nop_fail2, nop_fail3].map(&:dup) }
+      context '1 tick' do
+        before { subject.tick! }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_children_ticked_times [1, 0, 0] }
+      end
+
+      context '2 tick' do
+        before { 2.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[failure running success] }
+        it { is_expected.to have_children_ticked_times [2, 1, 0] }
+      end
+
+      context '3 tick' do
+        before { 3.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[failure failure running] }
+        it { is_expected.to have_children_ticked_times [2, 2, 1] }
+      end
+
+      context '4 tick' do
+        before { 4.times { subject.tick! } }
+        it { is_expected.to be_failure }
+        it { is_expected.to have_children_statuses %i[success success success] } # Halted.
+        it { is_expected.to have_children_ticked_times [2, 2, 2] }
+      end
+
+      context '5 tick' do
+        before { 5.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_children_ticked_times [3, 2, 2] }
+      end
+    end
+
+    context 'second operation is selected' do
+      let(:children) { [nop_fail1, nop_success, nop_fail2].map(&:dup) }
+      context '1 tick' do
+        before { subject.tick! }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_children_ticked_times [1, 0, 0] }
+      end
+
+      context '2 tick' do
+        before { 2.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[failure running success] }
+        it { is_expected.to have_children_ticked_times [2, 1, 0] }
+      end
+
+      context '3 tick' do
+        before { 3.times { subject.tick! } }
+        it { is_expected.to be_success }
+        it { is_expected.to have_children_statuses %i[success success success] } # Halted.
+        it { is_expected.to have_children_ticked_times [2, 2, 0] }
+      end
+
+      context '4 tick' do
+        before { 4.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_children_ticked_times [3, 2, 0] }
       end
     end
   end

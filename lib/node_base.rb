@@ -41,7 +41,6 @@ module BehaviorTree
         status.running!
         pre_tick
         on_tick
-        after_tick
         @tick_count += 1
       end
 
@@ -57,8 +56,6 @@ module BehaviorTree
     def should_tick?
       true
     end
-
-    def after_tick; end
 
     def pre_tick; end
 

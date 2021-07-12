@@ -5,16 +5,15 @@ module BehaviorTree
   class Selector < ControlNodeBase
     def on_tick
       tick_each_children do |child|
-        # A bit verbose, but helps understand what happens in each case.
-        if child.status.success?
-          halt!
-          return status.success!
-        end
-
         return status.running! if child.status.running?
-        next if child.status.failure?
+
+        # Both self and children have the status set to success.
+        return halt! if child.status.success?
       end
 
+      # Halt, but set success only to children, not to self.
+      # Self status must be overriden to failure.
+      halt!
       status.failure!
     end
   end

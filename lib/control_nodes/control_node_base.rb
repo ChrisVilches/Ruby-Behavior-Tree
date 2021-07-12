@@ -71,12 +71,12 @@ module BehaviorTree
     end
 
     class << self
-      attr_accessor :traversal_strategy
+      attr_reader :traversal_strategy
 
       private
 
       def children_traversal_strategy(traversal_strategy)
-        self.traversal_strategy = traversal_strategy
+        @traversal_strategy = traversal_strategy
       end
     end
 

@@ -15,4 +15,8 @@ describe BehaviorTree::Decorators.const_get(:RepeatTimesBase) do
       it { expect { subject }.to_not raise_error }
     end
   end
+
+  describe '.repeat_while' do
+    it { expect { subject.send :repeat_while }.to raise_error NotImplementedError }
+  end
 end
