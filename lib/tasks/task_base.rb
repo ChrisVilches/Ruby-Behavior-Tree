@@ -16,7 +16,6 @@ module BehaviorTree
     end
 
     def on_tick
-      eval 'self', @task_block.binding, __FILE__, __LINE__
       instance_eval(&@task_block)
     end
 

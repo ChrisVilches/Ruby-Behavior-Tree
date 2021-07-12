@@ -64,7 +64,6 @@ module BehaviorTree
       # extract what was pushed.
       def stack_children_from_block(block)
         @stack << []
-        eval 'self', block.binding, __FILE__, __LINE__
         instance_eval(&block)
       end
 
