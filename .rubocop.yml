@@ -74,6 +74,7 @@ Style/StringChars: # (new in 1.12)
 Style/SwapValues: # (new in 1.1)
   Enabled: true
 Metrics/BlockLength:
-  IgnoredMethods: ['describe'] # For Rspec.
+  Exclude:
+    - spec/**/*.rb
 Layout/HashAlignment:
   EnforcedColonStyle: table

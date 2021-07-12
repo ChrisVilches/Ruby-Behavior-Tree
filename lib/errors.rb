@@ -32,4 +32,20 @@ module BehaviorTree
       super "Incorrect status value. A node cannot have '#{value}' status."
     end
   end
+
+  # Exception for incorrect node type when using the DSL builder.
+  class NodeTypeDoesNotExistError < StandardError
+    def initialize(missing_method, suggestion, method_alias)
+      suggestion = suggestion.to_s
+      method_alias = method_alias.to_s
+
+      err = ["Node type '#{missing_method}' does not exist."]
+      unless suggestion.empty?
+        alias_text = method_alias.empty? ? '' : " (alias of #{method_alias})"
+        err << "Did you mean '#{suggestion}'#{alias_text}?"
+      end
+
+      super err.join ' '
+    end
+  end
 end
