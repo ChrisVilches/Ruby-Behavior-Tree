@@ -19,6 +19,9 @@ module BehaviorTree
     end
 
     def traversal_strategy
+      # NOTE: This means that a long chain of inheritance would not be able to provide
+      #       a default traversal_strategy value. It'd be necessary to traverse the
+      #       entire class hierarchy to find a present value.
       self.class.traversal_strategy || self.class.superclass.traversal_strategy
     end
 

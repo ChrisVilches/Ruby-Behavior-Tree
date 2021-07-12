@@ -17,6 +17,10 @@ module TestControlNodes
     children_traversal_strategy :all_nodes
     def on_tick; end
   end
+
+  class AllNodesSelector < BehaviorTree::Selector
+    children_traversal_strategy :all_nodes
+  end
 end
 
 describe BehaviorTree.const_get(:ControlNodeBase) do
@@ -39,6 +43,14 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
           TestControlNodes::OnTickNotImplemented.new(nops).tick!
         end.to raise_error(NotImplementedError).with_message('Must implement control logic')
       end
+    end
+
+    context 'child class inherits from selector' do
+      subject { TestControlNodes::AllNodesSelector.new(nops) }
+      it 'inherits on_tick implementation (does not raise NotImplementedError)' do
+        expect { subject.send :on_tick }.to_not raise_error
+      end
+      it { expect(subject.class.traversal_strategy).to eq :all_nodes }
     end
   end
 
