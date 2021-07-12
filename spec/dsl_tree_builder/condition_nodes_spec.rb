@@ -5,8 +5,7 @@ describe BehaviorTree::Builder do
 
   let(:tree) do
     BehaviorTree::Builder.build do
-      # TODO: Change proc {} to -> {} to make it beautiful.
-      condition proc { context[:a].positive? } do
+      condition ->(context) { context[:a].positive? } do
         task do
           context[:a] -= 1
           status.running!

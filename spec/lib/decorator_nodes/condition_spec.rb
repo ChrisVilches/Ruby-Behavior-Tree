@@ -18,7 +18,27 @@ describe BehaviorTree::Decorators::Condition do
     context 'no block given' do
       it { expect { described_class.new child }.to raise_error(ArgumentError).with_message(/must be given a block/) }
     end
+
+    context 'lambda given' do
+      subject { described_class.new(child, -> {}) }
+      it { expect { subject }.to_not raise_error }
+      context 'block also given' do
+        let(:invalid) { described_class.new(child, -> {}) { :empty_block } }
+        it { expect { invalid }.to raise_error(ArgumentError).with_message(/not both/) }
+      end
+    end
+
+    context 'proc given' do
+      subject { described_class.new(child, proc {}) }
+      it { expect { subject }.to_not raise_error }
+      context 'block also given' do
+        let(:invalid) { described_class.new(child, proc {}) { :empty_block } }
+        it { expect { invalid }.to raise_error(ArgumentError).with_message(/not both/) }
+      end
+    end
   end
+
+  pending 'Test the argument passing according to lambda arity'
 
   describe '.tick!' do
     context 'condition that prevents ticking after a few ticks' do

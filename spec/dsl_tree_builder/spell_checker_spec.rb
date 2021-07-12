@@ -5,7 +5,7 @@ describe BehaviorTree::Builder do
     BehaviorTree::Builder.build do
       inverter do
         seqq do
-          :empty
+          :empty_block
         end
       end
     end
@@ -15,7 +15,7 @@ describe BehaviorTree::Builder do
     BehaviorTree::Builder.build do
       inverter do
         sequencee do
-          :empty
+          :empty_block
         end
       end
     end
