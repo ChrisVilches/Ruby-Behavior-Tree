@@ -71,7 +71,7 @@ describe BehaviorTree::Tree do
 
   describe '.chainable_node' do
     let(:child) { nop_fail }
-    context 'chaining tree to control flow node' do
+    context 'chaining tree to control node' do
       before { selector << tree }
       it 'chains the tree in a flattened way' do
         added_child = selector.instance_variable_get(:@children).last

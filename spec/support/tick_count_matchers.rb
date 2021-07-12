@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec::Matchers.define :have_children_ticked_times do |expected_times|
-  # @children is for control-flow nodes, and @child is for decorators.
+  # @children is for control nodes, and @child is for decorators.
 
   match do |node|
     children = node.instance_variable_get(:@children) || [node.instance_variable_get(:@child)]

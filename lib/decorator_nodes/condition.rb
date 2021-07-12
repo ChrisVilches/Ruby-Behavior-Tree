@@ -36,7 +36,7 @@ module BehaviorTree
       private
 
       def validate_proc!(procedure, block)
-        raise ArgumentError, 'Condition decorator must be given a block' unless block || procedure.is_a?(Proc)
+        raise ArgumentError, 'Condition decorator must be given a block/procedure' unless block || procedure.is_a?(Proc)
 
         return if block.is_a?(Proc) ^ procedure.is_a?(Proc)
 

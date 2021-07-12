@@ -8,17 +8,18 @@ module BehaviorTree
     include NodeIterators::PrioritizeNonSuccess
     include NodeIterators::AllNodes
 
-    DEFAULT_CHILDREN_TRAVERSAL_STRATEGY = :prioritize_non_success
-
-    def initialize(children = [], traversal_strategy: DEFAULT_CHILDREN_TRAVERSAL_STRATEGY)
-      unless respond_to?(traversal_strategy)
+    def initialize(children = [])
+      unless respond_to?(traversal_strategy, true)
         err = "Iteration strategy named '#{traversal_strategy}' does not exist."
         raise NoMethodError, err
       end
 
       super()
       @children = children
-      @strategy = traversal_strategy
+    end
+
+    def traversal_strategy
+      self.class.traversal_strategy || self.class.superclass.traversal_strategy
     end
 
     def <<(child)
@@ -47,7 +48,7 @@ module BehaviorTree
       validate_non_leaf!
 
       Enumerator.new do |y|
-        enum = send(@strategy)
+        enum = send(traversal_strategy)
         validate_enum!(enum)
 
         enum.each do |child|
@@ -61,7 +62,17 @@ module BehaviorTree
     def validate_enum!(enum)
       raise IncorrectTraversalStrategyError, enum unless enum.respond_to? :each
     end
-  end
 
-  private_constant :ControlNodeBase
+    class << self
+      attr_accessor :traversal_strategy
+
+      private
+
+      def children_traversal_strategy(traversal_strategy)
+        self.traversal_strategy = traversal_strategy
+      end
+    end
+
+    children_traversal_strategy :prioritize_non_success
+  end
 end

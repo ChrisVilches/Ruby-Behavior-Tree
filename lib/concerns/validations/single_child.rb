@@ -11,7 +11,7 @@ module BehaviorTree
         return if child.is_a?(NodeBase)
 
         err = "This node can only have a #{NodeBase.name} object as a child. Attempted to assign #{child.class}."
-        raise ArgumentError, err
+        raise TypeError, err
       end
     end
   end

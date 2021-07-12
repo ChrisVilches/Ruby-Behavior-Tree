@@ -7,7 +7,7 @@ describe BehaviorTree::Decorators.const_get(:DecoratorBase) do
   describe '.initialize' do
     context 'argument has incorrect type' do
       let(:child) { [1, 2, 3] }
-      it { expect { subject }.to raise_error ArgumentError }
+      it { expect { subject }.to raise_error TypeError }
     end
 
     context 'argument has correct type' do

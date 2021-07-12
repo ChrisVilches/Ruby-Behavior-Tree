@@ -20,4 +20,6 @@ module BehaviorTree
 
     attr_reader :context
   end
+
+  Task = TaskBase
 end

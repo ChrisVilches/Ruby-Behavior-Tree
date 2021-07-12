@@ -19,7 +19,7 @@ module BehaviorTree
     end
   end
 
-  # Exception for control flow nodes without children.
+  # Exception for control nodes without children.
   class InvalidLeafNodeError < StandardError
     def initialize
       super 'This node cannot be a leaf node.'
