@@ -3,7 +3,7 @@
 describe BehaviorTree::Sequence do
   let(:nop2) { BehaviorTree::Nop.new(2, completes_with_failure: completes_with_failure) }
   let(:nop3) { BehaviorTree::Nop.new(3, completes_with_failure: completes_with_failure) }
-  let(:children) { subject.send(:children) }
+  let(:children) { subject.children }
   subject { described_class.new(children) }
   let(:nop_fail) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
 
@@ -95,7 +95,7 @@ describe BehaviorTree::Sequence do
     context 'executes all in sequence' do
       # TODO: Errors due to objects that are unable to deep-clone are present.
       #       Must refactor this.
-      let(:children) { [nop_success1, nop_success2, nop_success3].map(&:dup) }
+      let(:children) { [nop_success1, nop_success2, nop_success3] }
       context '1 tick' do
         before { subject.tick! }
         it { is_expected.to be_running }
@@ -143,7 +143,7 @@ describe BehaviorTree::Sequence do
     end
 
     context 'second operation fails' do
-      let(:children) { [nop_success1, nop_fail, nop_success2].map(&:dup) }
+      let(:children) { [nop_success1, nop_fail, nop_success2] }
       context '1 tick' do
         before { subject.tick! }
         it { is_expected.to be_running }
@@ -178,6 +178,15 @@ describe BehaviorTree::Sequence do
         it { is_expected.to have_children_running_for_ticks [1, 2, 0] }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_children_ticked_times [3, 2, 0] }
+      end
+
+      context '5 tick' do
+        before { 5.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
+        it { is_expected.to have_children_statuses %i[success running success] }
+        it { is_expected.to have_children_ticked_times [4, 3, 0] }
       end
     end
   end

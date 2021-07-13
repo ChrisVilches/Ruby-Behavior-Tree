@@ -3,7 +3,8 @@
 module BehaviorTree
   # A node (abstract class).
   class NodeBase
-    attr_reader :status, :tick_count, :arbitrary_storage
+    include TreeStructure::Algorithms
+    attr_reader :status, :tick_count, :ticks_running, :arbitrary_storage
 
     def initialize
       @status = NodeStatus.new NodeStatus::SUCCESS
