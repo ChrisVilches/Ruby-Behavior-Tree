@@ -93,8 +93,6 @@ describe BehaviorTree::Sequence do
     end
 
     context 'executes all in sequence' do
-      # TODO: Errors due to objects that are unable to deep-clone are present.
-      #       Must refactor this.
       let(:children) { [nop_success1, nop_success2, nop_success3] }
       context '1 tick' do
         before { subject.tick! }

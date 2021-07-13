@@ -7,6 +7,22 @@ describe BehaviorTree::TreeStructure::Algorithms do
   let(:nop1) { BehaviorTree::Nop.new }
   let(:nop2) { BehaviorTree::Nop.new }
 
+  let(:tree_selector_sequence_tasks) do
+    nop1_ = nop1
+    nop2_ = nop2
+    BehaviorTree::Builder.build do
+      sel do
+        seq do
+          chain nop1_
+          chain nop2_
+        end
+        seq do
+          t
+        end
+      end
+    end
+  end
+
   let(:tree_without_repeated_nodes) do
     nop1_ = nop1
     nop2_ = nop2
@@ -149,6 +165,48 @@ describe BehaviorTree::TreeStructure::Algorithms do
     context 'has a complex cycle' do
       let(:tree) { tree_with_complex_cycle }
       it { is_expected.to be true }
+    end
+  end
+
+  describe '.each_node' do
+    let(:result) do
+      tree_selector_sequence_tasks.each_node(traverse_type).map do |node, depth, idx|
+        [node, depth, idx]
+      end
+    end
+
+    # Convert class names into the first three letters downcased (Sequence -> seq).
+    let(:result_nodes) { result.map { |r| r.first.class.name.split('::').last[..2].downcase } }
+    let(:result_depth) { result.map { |r| r[1] } }
+    let(:result_indexes) { result.map(&:last) }
+
+    shared_examples :indexes_are_ordered do
+      it { expect(result_indexes).to eq (0...result_indexes.count).to_a }
+    end
+    context 'BFS' do
+      let(:traverse_type) { :breadth }
+      it_behaves_like :indexes_are_ordered
+      it { expect(result_nodes).to eq %w[sel seq seq nop nop tas] }
+      it { expect(result_depth).to eq [0, 1, 1, 2, 2, 2] }
+    end
+
+    context 'DFS preorder' do
+      let(:traverse_type) { :depth_preorder }
+      it_behaves_like :indexes_are_ordered
+      it { expect(result_nodes).to eq %w[sel seq nop nop seq tas] }
+      it { expect(result_depth).to eq [0, 1, 2, 2, 1, 2] }
+    end
+
+    context 'DFS postorder' do
+      let(:traverse_type) { :depth_postorder }
+      it_behaves_like :indexes_are_ordered
+      it { expect(result_nodes).to eq %w[nop nop seq tas seq sel] }
+      it { expect(result_depth).to eq [2, 2, 1, 2, 1, 0] }
+    end
+
+    context 'incorrect traversal type' do
+      let(:traverse_type) { :invalid }
+      it { expect { result }.to raise_error(ArgumentError).with_message(/must be in/) }
     end
   end
 end

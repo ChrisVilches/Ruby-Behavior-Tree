@@ -4,7 +4,7 @@ module BehaviorTree
   module TreeStructure
     # Basic tree algorithms.
     module Algorithms
-      TRAVERSAL_ORDERS = %i[depth_postorder depth_preorder breadth].freeze
+      TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
 
       def repeated_nodes
         visited = Set.new
@@ -44,12 +44,13 @@ module BehaviorTree
         dfs.(chainable_node)
       end
 
-      def each_node(order_type = TRAVERSAL_ORDERS.first, &block)
-        return enum_for(:each_node, order_type) unless block_given?
+      def each_node(traversal_type = TRAVERSAL_TYPES.first, &block)
+        return enum_for(:each_node, traversal_type) unless block_given?
 
-        raise ArgumentError, "Traversal order must be in: #{TRAVERSAL_ORDERS}" unless TRAVERSAL_ORDERS.any?(order_type)
+        raise ArgumentError, "Traversal type must be in: #{TRAVERSAL_TYPES}" unless TRAVERSAL_TYPES.any?(traversal_type)
 
-        enum_for("#{order_type}_yielder").each(&block)
+        send("#{traversal_type}_node_yielder", &block)
+        nil
       end
 
       private
@@ -64,7 +65,6 @@ module BehaviorTree
           yield(node, depth, idx)
           idx += 1
         end
-        nil
       end
 
       def depth_postorder_node_yielder
@@ -77,7 +77,6 @@ module BehaviorTree
         }
 
         dfs.(chainable_node, 0)
-        nil
       end
 
       def depth_preorder_node_yielder
@@ -90,7 +89,6 @@ module BehaviorTree
         }
 
         dfs.(chainable_node, 0)
-        nil
       end
     end
   end

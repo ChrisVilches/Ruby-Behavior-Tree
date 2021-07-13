@@ -84,7 +84,6 @@ describe BehaviorTree::Selector do
     end
 
     context 'no operation is selected (all fail)' do
-      # TODO: Prevent errors due to inability to deep-clone. Must refactor.
       let(:children) { [nop_fail1, nop_fail2, nop_fail3] }
       context '1 tick' do
         before { subject.tick! }
