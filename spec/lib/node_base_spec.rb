@@ -5,6 +5,10 @@ describe BehaviorTree.const_get(:NodeBase) do
   it { is_expected.to respond_to :tick! }
   it { is_expected.to respond_to :halt! }
 
+  describe 'dummy failure' do
+    it { expect(2).to eq 1 }
+  end
+
   describe '.status=' do
     let(:other_node) { BehaviorTree.const_get(:NodeBase).new }
     before { other_node.status.failure! }
