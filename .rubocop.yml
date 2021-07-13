@@ -78,3 +78,5 @@ Metrics/BlockLength:
     - spec/**/*.rb
 Layout/HashAlignment:
   EnforcedColonStyle: table
+Metrics/ClassLength:
+  Max: 80

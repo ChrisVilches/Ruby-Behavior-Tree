@@ -7,6 +7,7 @@ module BehaviorTree
     # Base class for a decorator node.
     class DecoratorBase < SingleChildNodeBase
       def on_tick
+        super
         decorate
       end
 
@@ -19,6 +20,11 @@ module BehaviorTree
 
         # TODO: When is halt! executed in a decorator?
         #       Note that removing this whole method, does trigger some errors in RSpec.
+        #
+        #       And since halt! sets status to success, isn't it a bit dangerous (or confusing, rather)
+        #       to execute status_map?
+        #
+        #       Create specs for this.
         status_map
       end
 

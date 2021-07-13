@@ -96,4 +96,12 @@ describe BehaviorTree::Tree do
       it { expect(new_tree.child).to eq nop_fail }
     end
   end
+
+  describe '.uniq_nodes?' do
+    pending
+  end
+
+  describe '.dag?' do
+    pending
+  end
 end

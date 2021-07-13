@@ -12,7 +12,7 @@ module BehaviorTree
       @child = child.chainable_node
     end
 
-    def pre_tick
+    def on_tick
       @child.tick!
     end
 

@@ -66,8 +66,6 @@ module BehaviorTree
       end
 
       def chain(node)
-        # TODO: If I don't add this, and I chain something like a 'nil', it still works,
-        #       but crashes later. Maybe the validations in control nodes are lacking.
         unless node.is_a?(NodeBase)
           raise DSLStandardError, "The 'chain' keyword must be used to chain a node or subtree, not a #{node.class}"
         end

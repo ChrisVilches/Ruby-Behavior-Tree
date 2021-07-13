@@ -33,8 +33,20 @@ module BehaviorTree
     def validate_tree!
       raise NotImplementedError
       # NOTE: One thing to validate would be that no nodes are repeated (reference to same object).
-      #       This could be a hard to find user error.
+      #       This could be a hard to debug user error.
       #       But maybe this is something desired in certain situations.
+      #
+      # NOTE: Also validate the tree is an actual DAG.
+    end
+
+    def uniq_nodes?
+      
+    end
+
+    def dag?
+      discovered = Set.new
+      departure = {}
+      time = 0
     end
   end
 end

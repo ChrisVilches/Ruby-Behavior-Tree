@@ -162,5 +162,7 @@ describe BehaviorTree::Sequence do
         it { is_expected.to have_children_ticked_times [3, 2, 0] }
       end
     end
+
+    pending 'Test a sequence and monitor their @ticks_running (children and self) to check its correct'
   end
 end

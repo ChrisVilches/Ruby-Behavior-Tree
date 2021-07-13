@@ -16,6 +16,8 @@ module BehaviorTree
     end
 
     def on_tick
+      raise 'Node should be set to running' unless status.running?
+
       instance_eval(&@task_block)
     end
 

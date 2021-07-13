@@ -8,6 +8,10 @@ describe BehaviorTree::Decorators::Inverter do
   #       I had commented out 'ensure_after_tick' (from DecoratorBase), which executes
   #       'status_map', which triggered an error, but this spec didn't detect it.
   #
+  #       This error happens because these tests execute a private inner method that's wrapped
+  #       by the .tick! lifecycle. In order to have the full behavior, .tick! should be
+  #       executed instead.
+  #
   #       That error is now covered in 'rspec spec/dsl_tree_builder/root_node_has_inverter_spec.rb'
   #       but it'd be great to have it here too.
 

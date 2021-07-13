@@ -14,3 +14,14 @@ RSpec::Matchers.define :have_children_ticked_times do |expected_times|
     "tick count comparison failed. Actual: #{actual_counts}, expected: #{expected_times}"
   end
 end
+
+RSpec::Matchers.define :have_been_running_for_ticks do |expected_times|
+  match do |node|
+    node.instance_variable_get(:@ticks_running) == expected_times
+  end
+
+  failure_message do |node|
+    actual_counts = node.instance_variable_get(:@ticks_running)
+    "tick count comparison failed. Actual: #{actual_counts}, expected: #{expected_times}"
+  end
+end

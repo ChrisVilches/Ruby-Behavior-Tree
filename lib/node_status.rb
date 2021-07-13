@@ -12,9 +12,17 @@ module BehaviorTree
     end
 
     def set(value)
+      return if value == @value
       raise IncorrectStatusValueError, value unless [SUCCESS, RUNNING, FAILURE].include?(value)
 
+      prev = @value
       @value = value
+
+      @subscriber&.(prev, @value)
+    end
+
+    def subscribe(&subscriber)
+      @subscriber = subscriber
     end
 
     def ==(other)

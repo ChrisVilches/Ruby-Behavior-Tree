@@ -17,6 +17,8 @@ module BehaviorTree
       protected
 
       def should_tick?
+        return false unless @conditional_block.is_a?(Proc)
+
         if @conditional_block.lambda?
           args = [@context, self].take @conditional_block.arity
           @conditional_block.call(*args)
@@ -36,8 +38,7 @@ module BehaviorTree
       private
 
       def validate_proc!(procedure, block)
-        raise ArgumentError, 'Condition decorator must be given a block/procedure' unless block || procedure.is_a?(Proc)
-
+        return if block.nil? && procedure.nil?
         return if block.is_a?(Proc) ^ procedure.is_a?(Proc)
 
         raise ArgumentError, 'Pass a lambda/proc or block to a condition decorator, but not both'
