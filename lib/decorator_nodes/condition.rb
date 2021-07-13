@@ -21,7 +21,7 @@ module BehaviorTree
 
         if @conditional_block.lambda?
           args = [@context, self].take @conditional_block.arity
-          @conditional_block.call(*args)
+          @conditional_block.(*args)
         else
           instance_eval(&@conditional_block)
         end

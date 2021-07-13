@@ -81,6 +81,6 @@ Layout/HashAlignment:
 Metrics/ClassLength:
   Max: 80
 Style/LambdaCall:
-  Enabled: false
+  EnforcedStyle: braces
 Style/Lambda:
   EnforcedStyle: literal

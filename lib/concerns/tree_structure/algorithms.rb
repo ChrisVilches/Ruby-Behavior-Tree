@@ -4,7 +4,7 @@ module BehaviorTree
   module TreeStructure
     # Basic tree algorithms.
     module Algorithms
-      TRAVERSAL_ORDERS = %i[preorder postorder].freeze
+      TRAVERSAL_ORDERS = %i[depth_postorder depth_preorder breadth].freeze
 
       def repeated_nodes
         visited = Set.new
@@ -18,7 +18,7 @@ module BehaviorTree
           node.children.each(&dfs)
         }
 
-        dfs.call(chainable_node)
+        dfs.(chainable_node)
 
         repeated_nodes
       end
@@ -41,7 +41,7 @@ module BehaviorTree
           result
         }
 
-        dfs.call(chainable_node)
+        dfs.(chainable_node)
       end
 
       def each_node(order_type = TRAVERSAL_ORDERS.first, &block)
@@ -49,21 +49,48 @@ module BehaviorTree
 
         raise ArgumentError, "Traversal order must be in: #{TRAVERSAL_ORDERS}" unless TRAVERSAL_ORDERS.any?(order_type)
 
-        Enumerator.new do |y|
-          idx = 0
-          visit = ->(node, depth) {
-            y.yield(node, depth, idx)
-            idx += 1
-          }
+        enum_for("#{order_type}_yielder").each(&block)
+      end
 
-          dfs = ->(node, depth) {
-            visit.(node, depth) if order_type == :preorder
-            node.children.each { |child| dfs.call(child, depth + 1) }
-            visit.(node, depth) if order_type == :postorder
-          }
+      private
 
-          dfs.call(chainable_node, 0)
-        end.each(&block)
+      def breadth_node_yielder
+        queue = [[chainable_node, 0]]
+        idx = 0
+        depth = 0
+        until queue.empty?
+          node, depth = queue.shift # Remove first
+          queue.concat(node.children.map { |child| [child, depth + 1] }) # Enqueue node with depth.
+          yield(node, depth, idx)
+          idx += 1
+        end
+        nil
+      end
+
+      def depth_postorder_node_yielder
+        idx = 0
+
+        dfs = ->(node, depth) {
+          node.children.each { |child| dfs.(child, depth + 1) }
+          yield(node, depth, idx)
+          idx += 1
+        }
+
+        dfs.(chainable_node, 0)
+        nil
+      end
+
+      def depth_preorder_node_yielder
+        idx = 0
+
+        dfs = ->(node, depth) {
+          yield(node, depth, idx)
+          idx += 1
+          node.children.each { |child| dfs.(child, depth + 1) }
+        }
+
+        dfs.(chainable_node, 0)
+        nil
       end
     end
   end
