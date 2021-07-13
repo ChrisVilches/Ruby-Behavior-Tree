@@ -1,5 +1,7 @@
 # Ruby Behavior Tree
 
+![](https://api.travis-ci.com/FeloVilches/Ruby-Behavior-Tree.svg?branch=main)
+
 ## Try on console
 
 Open `irb` console.
