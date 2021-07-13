@@ -3,7 +3,7 @@
 module BehaviorTree
   # A node (abstract class).
   class NodeBase
-    attr_reader :status, :tick_count
+    attr_reader :status, :tick_count, :arbitrary_storage
 
     def initialize
       @status = NodeStatus.new NodeStatus::SUCCESS
@@ -13,34 +13,20 @@ module BehaviorTree
 
       @status.subscribe { |prev, curr| on_status_change(prev, curr) }
 
-      # As the name implies, this is arbitrary data that's only accessible from
-      # the parent. For node-scoped data, simply use @ variables as usual.
-      #
-      # Nothing prevents other objects or itself from accessing it, though.
-      @parent_managed_arbitrary_storage = {}
+      @arbitrary_storage = {}
     end
 
     def context=(context)
       @context = context
 
       # Propagate context.
-      if @children.is_a?(Array)
-        @children.each do |child|
-          child.context = context
-        end
-      elsif @child.is_a?(NodeBase)
-        @child.context = context
+      children.each do |child|
+        child.context = context
       end
     end
 
     def size
-      1 + if @children.is_a?(Array)
-            @children.map(&:size).sum
-          elsif @child.is_a?(NodeBase)
-            @child.size
-          else
-            0
-          end
+      1 + children.map(&:size).sum
     end
 
     def tick!
@@ -57,9 +43,9 @@ module BehaviorTree
     end
 
     def children
-      if @children
+      if @children.is_a?(Array)
         @children
-      elsif @child
+      elsif @child.is_a?(NodeBase)
         [@child]
       else
         []
@@ -71,15 +57,11 @@ module BehaviorTree
     end
 
     def []=(key, value)
-      @parent_managed_arbitrary_storage[key] = value
+      @arbitrary_storage[key] = value
     end
 
     def [](key)
-      @parent_managed_arbitrary_storage[key]
-    end
-
-    def arbitrary_storage
-      @parent_managed_arbitrary_storage.dup.freeze
+      @arbitrary_storage[key]
     end
 
     def status=(other_status)

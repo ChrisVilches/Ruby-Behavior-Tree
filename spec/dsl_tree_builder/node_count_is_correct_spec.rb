@@ -14,14 +14,7 @@ describe BehaviorTree::Builder do
   end
 
   let(:tree2) do
-    # NOTE: I wanted to use tree1 defined above, but
-    #       the scope of the block doesn't find it.
-    #       But it seems this only happens in RSpec.
-    another_tree = BehaviorTree::Builder.build do
-      inverter do
-        task { status.success! }
-      end
-    end
+    another_tree = tree1
 
     BehaviorTree::Builder.build do
       inverter do
