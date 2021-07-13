@@ -56,6 +56,16 @@ module BehaviorTree
       ensure_after_tick
     end
 
+    def children
+      if @children
+        @children
+      elsif @child
+        [@child]
+      else
+        []
+      end
+    end
+
     def chainable_node
       self
     end

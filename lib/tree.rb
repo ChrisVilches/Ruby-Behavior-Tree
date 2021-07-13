@@ -4,6 +4,7 @@ module BehaviorTree
   # Root node of the tree.
   # This is the class that must be instantiated by the user.
   class Tree < SingleChildNodeBase
+    include TreeStructure::Algorithms
     attr_reader :context
 
     CHILD_VALID_CLASSES = [
@@ -28,25 +29,6 @@ module BehaviorTree
     def ensure_after_tick
       # Copy the main node status to self.
       self.status = child.status
-    end
-
-    def validate_tree!
-      raise NotImplementedError
-      # NOTE: One thing to validate would be that no nodes are repeated (reference to same object).
-      #       This could be a hard to debug user error.
-      #       But maybe this is something desired in certain situations.
-      #
-      # NOTE: Also validate the tree is an actual DAG.
-    end
-
-    def uniq_nodes?
-      
-    end
-
-    def dag?
-      discovered = Set.new
-      departure = {}
-      time = 0
     end
   end
 end
