@@ -90,6 +90,8 @@ describe BehaviorTree::Selector do
         before { subject.tick! }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 0, 0] }
         it { is_expected.to have_children_ticked_times [1, 0, 0] }
       end
 
@@ -97,6 +99,8 @@ describe BehaviorTree::Selector do
         before { 2.times { subject.tick! } }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[failure running success] }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
         it { is_expected.to have_children_ticked_times [2, 1, 0] }
       end
 
@@ -104,6 +108,8 @@ describe BehaviorTree::Selector do
         before { 3.times { subject.tick! } }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[failure failure running] }
+        it { is_expected.to have_been_running_for_ticks 3 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 1] }
         it { is_expected.to have_children_ticked_times [2, 2, 1] }
       end
 
@@ -111,6 +117,8 @@ describe BehaviorTree::Selector do
         before { 4.times { subject.tick! } }
         it { is_expected.to be_failure }
         it { is_expected.to have_children_statuses %i[success success success] } # Halted.
+        it { is_expected.to have_been_running_for_ticks 3 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 2] }
         it { is_expected.to have_children_ticked_times [2, 2, 2] }
       end
 
@@ -118,6 +126,8 @@ describe BehaviorTree::Selector do
         before { 5.times { subject.tick! } }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 2, 2] }
         it { is_expected.to have_children_ticked_times [3, 2, 2] }
       end
     end
@@ -128,6 +138,8 @@ describe BehaviorTree::Selector do
         before { subject.tick! }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 0, 0] }
         it { is_expected.to have_children_ticked_times [1, 0, 0] }
       end
 
@@ -135,6 +147,8 @@ describe BehaviorTree::Selector do
         before { 2.times { subject.tick! } }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[failure running success] }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
         it { is_expected.to have_children_ticked_times [2, 1, 0] }
       end
 
@@ -142,6 +156,8 @@ describe BehaviorTree::Selector do
         before { 3.times { subject.tick! } }
         it { is_expected.to be_success }
         it { is_expected.to have_children_statuses %i[success success success] } # Halted.
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 0] }
         it { is_expected.to have_children_ticked_times [2, 2, 0] }
       end
 
@@ -149,10 +165,26 @@ describe BehaviorTree::Selector do
         before { 4.times { subject.tick! } }
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 2, 0] }
         it { is_expected.to have_children_ticked_times [3, 2, 0] }
       end
-    end
 
-    pending 'Test a selector and monitor their @ticks_running (children and self) to check its correct'
+      context '5 tick' do
+        before { 5.times { subject.tick! } }
+        it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
+        it { is_expected.to have_children_ticked_times [4, 2, 0] }
+      end
+
+      context '6 tick' do
+        before { 6.times { subject.tick! } }
+        it { is_expected.to be_success }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 0] }
+        it { is_expected.to have_children_ticked_times [4, 3, 0] }
+      end
+    end
   end
 end

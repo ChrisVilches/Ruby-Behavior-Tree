@@ -30,3 +30,11 @@ https://www.gamasutra.com/blogs/ChrisSimpson/20140717/221339/Behavior_trees_for_
 > init - Called the first time a node is visited by its parent during its parents execution. For example a sequence will call this when its the node’s turn to be processed. It will not be called again until the next time the parent node is fired after the parent has finished processing and returned a result to its parent. This function is used to initialise the node and start the action the node represents. Using our walk example, it will retrieve the parameters and perhaps initiate the pathfinding job.
 >
 > process - This is called every tick of the behaviour tree while the node is processing. If this function returns Success or Failure, then its processing will end and the result passed to its parent. If it returns Running it will be reprocessed next tick, and again and again until it returns a Success or Failure. In the Walk example, it will return Running until the pathfinding either succeeds or fails.
+
+## Optimization
+
+(Regarding traversing entire tree every frame)
+
+> This isn’t a very efficient way to do things, especially when the behaviour tree gets deeper as its developed and expanded during development. I’d say its a must that any behaviour tree you implement should store any currently processing nodes so they can be ticked directly within the behaviour tree engine rather than per tick traversal of the entire tree.
+
+How can this be incorporated seamlessly without breaking too much into the existing code?

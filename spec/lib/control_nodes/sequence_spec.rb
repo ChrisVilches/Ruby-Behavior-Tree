@@ -99,6 +99,8 @@ describe BehaviorTree::Sequence do
       context '1 tick' do
         before { subject.tick! }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 0, 0] }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_children_ticked_times [1, 0, 0] }
       end
@@ -106,6 +108,8 @@ describe BehaviorTree::Sequence do
       context '2 tick' do
         before { 2.times { subject.tick! } }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
         it { is_expected.to have_children_statuses %i[success running success] }
         it { is_expected.to have_children_ticked_times [2, 1, 0] }
       end
@@ -113,6 +117,8 @@ describe BehaviorTree::Sequence do
       context '3 tick' do
         before { 3.times { subject.tick! } }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 3 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 1] }
         it { is_expected.to have_children_statuses %i[success success running] }
         it { is_expected.to have_children_ticked_times [2, 2, 1] }
       end
@@ -120,6 +126,8 @@ describe BehaviorTree::Sequence do
       context '4 tick' do
         before { 4.times { subject.tick! } }
         it { is_expected.to be_success }
+        it { is_expected.to have_been_running_for_ticks 4 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 2] }
         it { is_expected.to have_children_statuses %i[success success success] }
         it { is_expected.to have_children_ticked_times [2, 2, 2] }
       end
@@ -127,6 +135,8 @@ describe BehaviorTree::Sequence do
       context '5 tick' do
         before { 5.times { subject.tick! } }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 2, 2] }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_children_ticked_times [3, 2, 2] }
       end
@@ -137,6 +147,8 @@ describe BehaviorTree::Sequence do
       context '1 tick' do
         before { subject.tick! }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 0, 0] }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_children_ticked_times [1, 0, 0] }
       end
@@ -144,6 +156,8 @@ describe BehaviorTree::Sequence do
       context '2 tick' do
         before { 2.times { subject.tick! } }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 2 }
+        it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
         it { is_expected.to have_children_statuses %i[success running success] }
         it { is_expected.to have_children_ticked_times [2, 1, 0] }
       end
@@ -151,6 +165,8 @@ describe BehaviorTree::Sequence do
       context '3 tick' do
         before { 3.times { subject.tick! } }
         it { is_expected.to be_failure }
+        it { is_expected.to have_been_running_for_ticks 3 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 0] }
         it { is_expected.to have_children_statuses %i[success success success] } # Halted.
         it { is_expected.to have_children_ticked_times [2, 2, 0] }
       end
@@ -158,11 +174,11 @@ describe BehaviorTree::Sequence do
       context '4 tick' do
         before { 4.times { subject.tick! } }
         it { is_expected.to be_running }
+        it { is_expected.to have_been_running_for_ticks 1 }
+        it { is_expected.to have_children_running_for_ticks [1, 2, 0] }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_children_ticked_times [3, 2, 0] }
       end
     end
-
-    pending 'Test a sequence and monitor their @ticks_running (children and self) to check its correct'
   end
 end

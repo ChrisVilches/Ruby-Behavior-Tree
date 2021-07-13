@@ -78,7 +78,7 @@ describe BehaviorTree::Tree do
     context 'chaining tree to control node' do
       before { selector << tree }
       it 'chains the tree in a flattened way' do
-        added_child = selector.instance_variable_get(:@children).last
+        added_child = selector.children.last
         expect(added_child).to eq nop_fail
       end
     end
@@ -86,7 +86,7 @@ describe BehaviorTree::Tree do
     context 'chaining tree to decorator node' do
       let(:repeater) { BehaviorTree::Decorators::Repeater.new(tree, 10) }
       it 'chains the tree in a flattened way' do
-        decorator_child = repeater.instance_variable_get(:@child)
+        decorator_child = repeater.children.first
         expect(decorator_child).to eq nop_fail
       end
     end

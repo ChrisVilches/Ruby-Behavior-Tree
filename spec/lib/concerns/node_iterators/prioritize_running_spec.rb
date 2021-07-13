@@ -20,8 +20,8 @@ describe BehaviorTree::NodeIterators::PrioritizeRunning do
 
       context 'first one is success, second one is running' do
         before do
-          subject.instance_variable_get(:@children)[0].status.success!
-          subject.instance_variable_get(:@children)[1].status.running!
+          subject.children[0].status.success!
+          subject.children[1].status.running!
         end
 
         # Skip first node.

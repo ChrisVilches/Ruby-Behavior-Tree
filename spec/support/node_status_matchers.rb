@@ -17,7 +17,7 @@ end
 
 RSpec::Matchers.define :have_children_statuses do |expected_statuses|
   match do |node|
-    children = node.instance_variable_get(:@children)
+    children = node.children
 
     # If single value N, transform into [N, N, N, ...]
     expected_statuses = [expected_statuses] * children.count unless expected_statuses.is_a?(Array)
@@ -26,7 +26,7 @@ RSpec::Matchers.define :have_children_statuses do |expected_statuses|
   end
 
   failure_message do |node|
-    statuses = node.instance_variable_get(:@children)
+    statuses = node.children
                    .map { |child| child.status.to_sym }
     node_status_comparison_fail_message(statuses, expected_statuses)
   end
