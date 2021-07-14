@@ -18,11 +18,13 @@ module BehaviorTree
         @stack = []
 
         stack_children_from_block(block)
-        tree_main_node = @stack.pop.first
+        tree_main_nodes = @stack.pop
+
+        raise DSLStandardError, 'Tree main node should be a single node' if tree_main_nodes.count > 1
 
         raise 'Tree structure is incorrect. Probably a problem with the library.' unless @stack.empty?
 
-        BehaviorTree::Tree.new tree_main_node
+        BehaviorTree::Tree.new tree_main_nodes.first
       end
 
       # Don't validate class_name, because in some situations the user wants it to be evaluated

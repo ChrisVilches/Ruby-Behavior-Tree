@@ -16,9 +16,9 @@ module BehaviorTree
       raise IncorrectStatusValueError, value unless [SUCCESS, RUNNING, FAILURE].include?(value)
 
       prev = @value
-      @value = value
 
-      @subscriber&.(prev, @value)
+      @subscriber&.(prev, value)
+      @value = value
     end
 
     def subscribe(&subscriber)

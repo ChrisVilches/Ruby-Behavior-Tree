@@ -41,6 +41,13 @@ module BehaviorTree
       end
 
       ensure_after_tick
+
+      # NOTE: Make sure this method returns nil. Since 'ensure_after_tick' might return
+      #       the node status, it generates some error in IRB (unknown cause).
+      #
+      #       This error can be replicated by pasting a valid status object in IRB, such as by doing:
+      #       BehaviorTree.const_get(:NodeStatus).new(:__running__) # Valid, but IRB crashes.
+      nil
     end
 
     def children
@@ -69,7 +76,6 @@ module BehaviorTree
       status.running! if other_status.running?
       status.failure! if other_status.failure?
       status.success! if other_status.success?
-      status
     end
 
     def halt!
