@@ -5,6 +5,7 @@ module BehaviorTree
   # This is the class that must be instantiated by the user.
   class Tree < SingleChildNodeBase
     include TreeStructure::Algorithms
+    include TreeStructure::Printer
     attr_reader :context
 
     CHILD_VALID_CLASSES = [

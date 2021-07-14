@@ -11,14 +11,10 @@ module BehaviorTree
       @task_block = block
     end
 
-    def void?
-      !@task_block
-    end
-
     def on_tick
       raise 'Node should be set to running' unless status.running?
 
-      instance_eval(&@task_block)
+      instance_eval(&@task_block) if @task_block
     end
 
     private

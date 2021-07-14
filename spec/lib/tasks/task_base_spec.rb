@@ -21,13 +21,16 @@ describe BehaviorTree::TaskBase do
     it { expect(subject.instance_variable_get(:@context)[:a]).to eq 4 }
   end
 
-  describe '.void?' do
-    context 'has block' do
-      it { expect(described_class.new { :empty_block }.void?).to be false }
-    end
+  # NOTE: Probably needs to be removed, since a task can have its behavior implemented
+  #       by overloading the method rather than passing a block, so checking whether it
+  #       does not have a block doesn't guarantee the behavior is empty.
+  # describe '.void?' do
+  #   context 'has block' do
+  #     it { expect(described_class.new { :empty_block }.void?).to be false }
+  #   end
 
-    context 'does not have block' do
-      it { expect(described_class.new.void?).to be true }
-    end
-  end
+  #   context 'does not have block' do
+  #     it { expect(described_class.new.void?).to be true }
+  #   end
+  # end
 end
