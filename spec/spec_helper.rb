@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'simplecov'
+require 'bundler/setup'
+require 'ruby_behavior_tree'
 
 SimpleCov.start do
   add_filter 'spec/'

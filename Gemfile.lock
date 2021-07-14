@@ -1,3 +1,8 @@
+PATH
+  remote: .
+  specs:
+    ruby_behavior_tree (0.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -89,6 +94,7 @@ DEPENDENCIES
   rb-fsevent (~> 0.9)
   rspec
   rubocop
+  ruby_behavior_tree!
   simplecov
 
 BUNDLED WITH
