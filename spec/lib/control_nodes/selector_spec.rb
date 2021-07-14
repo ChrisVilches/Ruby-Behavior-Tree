@@ -116,8 +116,8 @@ describe BehaviorTree::Selector do
         before { 4.times { subject.tick! } }
         it { is_expected.to be_failure }
         it { is_expected.to have_children_statuses %i[success success success] } # Halted.
-        it { is_expected.to have_been_running_for_ticks 4 } # TODO: Does it not get resetted when halted?
-        it { is_expected.to have_children_running_for_ticks [2, 2, 2] } # TODO: This one too
+        it { is_expected.to have_been_running_for_ticks 4 }
+        it { is_expected.to have_children_running_for_ticks [2, 2, 2] }
         it { is_expected.to have_children_ticked_times [2, 2, 2] }
       end
 
