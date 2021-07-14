@@ -13,4 +13,5 @@ require 'ruby_behavior_tree'
 # Pry.start
 
 require 'irb'
+require 'irb/completion'
 IRB.start(__FILE__)
