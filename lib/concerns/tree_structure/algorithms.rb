@@ -4,8 +4,6 @@ module BehaviorTree
   module TreeStructure
     # Basic tree algorithms.
     module Algorithms
-      TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
-
       def repeated_nodes
         visited = Set.new
         repeated_nodes = Set.new
@@ -54,6 +52,8 @@ module BehaviorTree
       end
 
       private
+
+      TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
 
       def breadth_node_yielder
         queue = [[chainable_node, 0]]
