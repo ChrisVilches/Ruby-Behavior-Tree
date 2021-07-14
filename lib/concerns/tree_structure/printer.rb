@@ -18,37 +18,19 @@ module BehaviorTree
       private
 
       def tree_lines
-        depth_last_child = Set.new
-        prev_depth = 0
+        # Store which depth values must continue to display a vertical line.
+        vertical_lines_continues = Set.new
 
         each_node(:depth_preorder).map do |node, depth, _global_idx, local_idx, local_count|
           # Parent's last child?
           last_child = local_idx == local_count - 1
 
-          update_depth_last_child(prev_depth, depth, depth_last_child, last_child)
+          last_child ? vertical_lines_continues.delete(depth) : vertical_lines_continues << depth
 
-          prev_depth = depth
+          space = (0...depth).map { |d| vertical_lines_continues.include?(d) ? '│ ' : '  ' }.join
+          connector = last_child ? '└─' : '├─'
 
-          tree_line(node, last_child, depth, depth_last_child)
-        end
-      end
-
-      # TODO: Comment and explain.
-      def tree_line(node, last_child, curr_depth, depth_last_child)
-        space = (0...curr_depth).map { |d| depth_last_child.include?(d) ? '  ' : '│ ' }.join
-        connector = last_child ? '└─' : '├─'
-
-        depth_debug = (0...curr_depth).map { |d| depth_last_child.include?(d) ? 'x' : '_' }.join
-
-        "#{space}#{connector}#{class_simple_name(node)} #{status_string(node)} #{tick_count_string(node)} -- #{depth_debug}"
-      end
-
-      # TODO: Comment and explain because it's a bit hard.
-      def update_depth_last_child(prev_depth, curr_depth, depth_last_child, last_child)
-        if last_child
-          depth_last_child << curr_depth
-        elsif prev_depth < curr_depth
-          depth_last_child.delete curr_depth
+          "#{space}#{connector}#{class_simple_name(node)} #{status_string(node)} #{tick_count_string(node)}"
         end
       end
 
