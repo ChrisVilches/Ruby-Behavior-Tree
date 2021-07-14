@@ -47,11 +47,11 @@ describe TestControlNodes::Shuffle do
       expect(subject).to be_running
 
       cached_order = current_shuffled_order.()
-      10.times { subject.tick! } # Total of 11 ticks
+      10.times { subject.tick! } # Total of 11 ticks (running)
       expect(cached_order).to eq current_shuffled_order.()
       expect(subject).to be_running
 
-      10.times { subject.tick! } # Total of 21 ticks
+      10.times { subject.tick! } # Total of 21 ticks (just completed, success)
       expect(cached_order).to eq current_shuffled_order.()
       expect(subject).to be_success
 
