@@ -10,8 +10,8 @@ describe BehaviorTree::Builder do
   end
 
   # Decompose the tree.
-  let(:inverter) { subject.instance_variable_get(:@child) }
-  let(:task) { inverter.instance_variable_get(:@child) }
+  let(:inverter) { subject.children.first }
+  let(:task) { inverter.children.first }
 
   context 'tree with inverter and task' do
     before { subject.tick! }
