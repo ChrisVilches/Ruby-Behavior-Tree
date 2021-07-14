@@ -6,6 +6,8 @@ module BehaviorTree
   module Decorators
     # Applies a condition that will decide whether to tick the decorated node or not.
     class Condition < DecoratorBase
+      include Validations::ProcOrBlock
+
       def initialize(child, procedure = nil, &block)
         validate_proc!(procedure, block)
 
@@ -36,13 +38,6 @@ module BehaviorTree
       end
 
       private
-
-      def validate_proc!(procedure, block)
-        return if block.nil? && procedure.nil?
-        return if block.is_a?(Proc) ^ procedure.is_a?(Proc)
-
-        raise ArgumentError, 'Pass a lambda/proc or block to a condition decorator, but not both'
-      end
 
       attr_reader :context
     end

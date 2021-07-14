@@ -21,9 +21,9 @@ module BehaviorTree
         # Store which depth values must continue to display a vertical line.
         vertical_lines_continues = Set.new
 
-        each_node(:depth_preorder).map do |node, depth, _global_idx, local_idx, local_count|
+        each_node(:depth_preorder).map do |node, depth, _global_idx, parent_node|
           # Parent's last child?
-          last_child = local_idx == local_count - 1
+          last_child = node == parent_node.children.last
 
           last_child ? vertical_lines_continues.delete(depth) : vertical_lines_continues << depth
 
@@ -66,12 +66,8 @@ module BehaviorTree
         ColorizedString["(#{node.tick_count} ticks)"].colorize(color)
       end
 
-      def snake_case(str)
-        str.gsub(/([a-z])([A-Z])/) { "#{Regexp.last_match(1)}_#{Regexp.last_match(2)}" }.downcase
-      end
-
       # Copied from Rails' ActiveSupport.
-      def underscore(str)
+      def snake_case(str)
         str.gsub(/::/, '/')
            .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
            .gsub(/([a-z\d])([A-Z])/, '\1_\2')

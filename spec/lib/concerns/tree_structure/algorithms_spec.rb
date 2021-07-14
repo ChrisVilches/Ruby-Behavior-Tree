@@ -170,15 +170,16 @@ describe BehaviorTree::TreeStructure::Algorithms do
 
   describe '.each_node' do
     let(:result) do
-      tree_selector_sequence_tasks.each_node(traverse_type).map do |node, depth, idx|
-        [node, depth, idx]
+      tree_selector_sequence_tasks.each_node(traverse_type).map do |node, depth, idx, parent_node|
+        [node, depth, idx, parent_node]
       end
     end
 
     # Convert class names into the first three letters downcased (Sequence -> seq).
     let(:result_nodes) { result.map { |r| r.first.class.name.split('::').last[..2].downcase } }
     let(:result_depth) { result.map { |r| r[1] } }
-    let(:result_indexes) { result.map(&:last) }
+    let(:result_indexes) { result.map { |r| r[2] } }
+    let(:result_parents) { result.map { |r| r.last.class.name.split('::').last[..2].downcase } }
 
     shared_examples :indexes_are_ordered do
       it { expect(result_indexes).to eq (0...result_indexes.count).to_a }
@@ -186,6 +187,7 @@ describe BehaviorTree::TreeStructure::Algorithms do
     context 'BFS' do
       let(:traverse_type) { :breadth }
       it_behaves_like :indexes_are_ordered
+      it { expect(result_parents).to eq %w[tre sel sel seq seq seq] }
       it { expect(result_nodes).to eq %w[sel seq seq nop nop tas] }
       it { expect(result_depth).to eq [0, 1, 1, 2, 2, 2] }
     end
@@ -193,6 +195,7 @@ describe BehaviorTree::TreeStructure::Algorithms do
     context 'DFS preorder' do
       let(:traverse_type) { :depth_preorder }
       it_behaves_like :indexes_are_ordered
+      it { expect(result_parents).to eq %w[tre sel seq seq sel seq] }
       it { expect(result_nodes).to eq %w[sel seq nop nop seq tas] }
       it { expect(result_depth).to eq [0, 1, 2, 2, 1, 2] }
     end
@@ -200,6 +203,7 @@ describe BehaviorTree::TreeStructure::Algorithms do
     context 'DFS postorder' do
       let(:traverse_type) { :depth_postorder }
       it_behaves_like :indexes_are_ordered
+      it { expect(result_parents).to eq %w[seq seq sel seq sel tre] }
       it { expect(result_nodes).to eq %w[nop nop seq tas seq sel] }
       it { expect(result_depth).to eq [2, 2, 1, 2, 1, 0] }
     end

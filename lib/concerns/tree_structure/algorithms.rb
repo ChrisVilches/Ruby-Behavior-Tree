@@ -54,13 +54,14 @@ module BehaviorTree
       private
 
       def breadth_node_yielder
-        queue = [[chainable_node, 0]]
+        queue = [[chainable_node, 0, self]]
         idx = 0
         depth = 0
         until queue.empty?
-          node, depth = queue.shift # Remove first
-          queue.concat(node.children.map { |child| [child, depth + 1] }) # Enqueue node with depth.
-          yield(node, depth, idx)
+          node, depth, parent_node = queue.shift # Remove first
+          # Enqueue node with depth and parent.
+          queue.concat(node.children.map { |child| [child, depth + 1, node] })
+          yield(node, depth, idx, parent_node)
           idx += 1
         end
       end
@@ -68,26 +69,25 @@ module BehaviorTree
       def depth_postorder_node_yielder
         idx = 0
 
-        dfs = ->(node, depth) {
-          node.children.each { |child| dfs.(child, depth + 1) }
-          yield(node, depth, idx)
+        dfs = ->(node, depth, parent_node) {
+          node.children.each { |child| dfs.(child, depth + 1, node) }
+          yield(node, depth, idx, parent_node)
           idx += 1
         }
 
-        dfs.(chainable_node, 0)
+        dfs.(chainable_node, 0, self)
       end
 
       def depth_preorder_node_yielder
         idx = 0
 
-        dfs = ->(node, depth, local_idx, local_count) {
-          yield(node, depth, idx, local_idx, local_count)
+        dfs = ->(node, depth, parent_node) {
+          yield(node, depth, idx, parent_node)
           idx += 1
-          children = node.children
-          children.each_with_index { |child, i| dfs.(child, depth + 1, i, children.count) }
+          node.children.each { |child| dfs.(child, depth + 1, node) }
         }
 
-        dfs.(chainable_node, 0, 0, 1)
+        dfs.(chainable_node, 0, self)
       end
 
       TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
