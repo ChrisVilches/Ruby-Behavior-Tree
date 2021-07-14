@@ -7,7 +7,7 @@ module BehaviorTree
     # Executes the initial registration of nodes.
     module InitialConfig
       def dsl_config
-        @dsl_config ||= YAML.load_file('./lib/dsl.yml')['dsl']
+        @dsl_config ||= YAML.load_file(File.join(__dir__, 'dsl.yml'))['dsl']
       end
 
       def initial_config
