@@ -38,5 +38,9 @@ describe BehaviorTree::Decorators::Retry do
     before { subject.halt! }
     it { expect(child).to be_success }
     it { is_expected.to be_success }
+    it 'has not been ticked (nor repeated, etc)' do
+      is_expected.to have_children_ticked_times [0]
+      expect(subject.tick_count).to eq 0
+    end
   end
 end

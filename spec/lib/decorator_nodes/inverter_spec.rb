@@ -13,6 +13,13 @@ describe BehaviorTree::Decorators::Inverter do
     it { expect(child).to be_success }
   end
 
+  describe '.halt!' do
+    before { child.status.running! }
+    before { subject.halt! }
+    it { is_expected.to be_failure }
+    it { expect(child).to be_success }
+  end
+
   describe '.status_map' do
     before { child.status.send("#{child_returned_status}!") }
     before { subject.send :status_map }

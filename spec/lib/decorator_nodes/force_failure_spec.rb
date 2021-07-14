@@ -4,6 +4,13 @@ describe BehaviorTree::Decorators::ForceFailure do
   let(:child) { BehaviorTree::Nop.new }
   subject { described_class.new child }
 
+  describe '.halt!' do
+    before { child.status.running! }
+    before { subject.halt! }
+    it { is_expected.to be_failure }
+    it { expect(child).to be_success }
+  end
+
   describe '.status_map' do
     before { child.status.send("#{child_returned_status}!") }
     before { subject.send :status_map }

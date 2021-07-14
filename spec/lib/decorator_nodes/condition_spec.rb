@@ -103,4 +103,11 @@ describe BehaviorTree::Decorators::Condition do
       end
     end
   end
+
+  describe '.halt!' do
+    before { child.status.running! }
+    before { subject.halt! }
+    it { is_expected.to be_success }
+    it { expect(child).to be_success }
+  end
 end
