@@ -65,7 +65,7 @@ GEM
       rubocop-ast (>= 1.7.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.7.0)
+    rubocop-ast (1.8.0)
       parser (>= 3.0.1.1)
     ruby-progressbar (1.11.0)
     shellany (0.0.1)
@@ -80,7 +80,6 @@ GEM
 
 PLATFORMS
   ruby
-  x86_64-linux
 
 DEPENDENCIES
   colorize
@@ -93,4 +92,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.2.21
+   1.17.2

@@ -7,7 +7,7 @@
 Open `irb` console.
 
 ```bash
-irb -r ./loader.rb
+irb -r ./main.rb
 ```
 
 Test it with this simple code:

@@ -38,3 +38,9 @@ https://www.gamasutra.com/blogs/ChrisSimpson/20140717/221339/Behavior_trees_for_
 > This isn’t a very efficient way to do things, especially when the behaviour tree gets deeper as its developed and expanded during development. I’d say its a must that any behaviour tree you implement should store any currently processing nodes so they can be ticked directly within the behaviour tree engine rather than per tick traversal of the entire tree.
 
 How can this be incorporated seamlessly without breaking too much into the existing code?
+
+## Document
+
+https://guides.rubygems.org/make-your-own-gem/
+
+> By default most gems use RDoc to generate docs. There are plenty of great tutorials for learning how to mark up your code with RDoc.

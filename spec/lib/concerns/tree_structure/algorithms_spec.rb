@@ -176,10 +176,10 @@ describe BehaviorTree::TreeStructure::Algorithms do
     end
 
     # Convert class names into the first three letters downcased (Sequence -> seq).
-    let(:result_nodes) { result.map { |r| r.first.class.name.split('::').last[..2].downcase } }
+    let(:result_nodes) { result.map { |r| r.first.class.name.split('::').last[0..2].downcase } }
     let(:result_depth) { result.map { |r| r[1] } }
     let(:result_indexes) { result.map { |r| r[2] } }
-    let(:result_parents) { result.map { |r| r.last.class.name.split('::').last[..2].downcase } }
+    let(:result_parents) { result.map { |r| r.last.class.name.split('::').last[0..2].downcase } }
 
     shared_examples :indexes_are_ordered do
       it { expect(result_indexes).to eq (0...result_indexes.count).to_a }
