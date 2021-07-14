@@ -53,8 +53,6 @@ module BehaviorTree
 
       private
 
-      TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
-
       def breadth_node_yielder
         queue = [[chainable_node, 0]]
         idx = 0
@@ -90,6 +88,8 @@ module BehaviorTree
 
         dfs.(chainable_node, 0)
       end
+
+      TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
     end
   end
 end
