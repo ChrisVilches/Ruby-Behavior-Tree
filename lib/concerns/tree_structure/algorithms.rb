@@ -80,13 +80,14 @@ module BehaviorTree
       def depth_preorder_node_yielder
         idx = 0
 
-        dfs = ->(node, depth) {
-          yield(node, depth, idx)
+        dfs = ->(node, depth, local_idx, local_count) {
+          yield(node, depth, idx, local_idx, local_count)
           idx += 1
-          node.children.each { |child| dfs.(child, depth + 1) }
+          children = node.children
+          children.each_with_index { |child, i| dfs.(child, depth + 1, i, children.count) }
         }
 
-        dfs.(chainable_node, 0)
+        dfs.(chainable_node, 0, 0, 1)
       end
 
       TRAVERSAL_TYPES = %i[depth_postorder depth_preorder breadth].freeze
