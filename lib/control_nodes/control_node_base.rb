@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative '../node_base'
+require_relative '../concerns/node_iterators/prioritize_running'
+require_relative '../concerns/node_iterators/all_nodes'
 
 module BehaviorTree
   # A node that has children (abstract class).

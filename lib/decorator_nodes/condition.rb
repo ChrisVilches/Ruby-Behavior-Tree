@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative './decorator_base'
+require_relative '../concerns/validations/proc_or_block'
 
 module BehaviorTree
   module Decorators

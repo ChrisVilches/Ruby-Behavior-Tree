@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative './decorator_base'
+
 module BehaviorTree
   module Decorators
     # Returns the inverted child status.

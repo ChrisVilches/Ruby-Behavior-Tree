@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative './node_base'
+require_relative './concerns/validations/single_child'
+
 module BehaviorTree
   # A node that has a single child (abstract class).
   class SingleChildNodeBase < NodeBase

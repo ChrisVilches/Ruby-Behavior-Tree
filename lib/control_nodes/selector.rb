@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative './control_node_base'
+
 module BehaviorTree
   # A selector node.
   class Selector < ControlNodeBase

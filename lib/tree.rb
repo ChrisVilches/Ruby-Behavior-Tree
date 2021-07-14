@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative './concerns/tree_structure/printer'
+require_relative './tasks/task_base'
+
 module BehaviorTree
   # Root node of the tree.
   # This is the class that must be instantiated by the user.
