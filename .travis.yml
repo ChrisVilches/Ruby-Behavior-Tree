@@ -1,2 +1,2 @@
 language: ruby
-rvm: 2.7.0
+rvm: 2.7.0 # Travis doesn't find the gem did_you_mean when using 2.6.0 for some reason.
