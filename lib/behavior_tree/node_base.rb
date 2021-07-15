@@ -12,7 +12,7 @@ module BehaviorTree
       @ticks_running = 0
       @context = nil
 
-      @status.subscribe { |prev, curr| on_status_change(prev, curr) }
+      @status.subscribe { |prev, curr| __on_status_change__(prev, curr) }
 
       @arbitrary_storage = {}
     end
@@ -98,18 +98,24 @@ module BehaviorTree
 
     def on_finished_running; end
 
+    def on_status_change(_prev, _curr); end
+
     private
 
     # Always prev != curr (states that are set to the same aren't notified).
     # The fact that it's set to 0 means that setting to running must be done before
     # increasing the counts (so that @ticks_running becomes 1 after the whole tick lifecycle).
-    def on_status_change(prev, curr)
+    # This is the non custom on_status_change. Users are expected to override the one without
+    # double underscore if they want to execute custom logic.
+    def __on_status_change__(prev, curr)
       if prev == NodeStatus::RUNNING
         on_finished_running
       elsif curr == NodeStatus::RUNNING
         @ticks_running = 0
         on_started_running
       end
+
+      on_status_change(prev, curr)
     end
   end
 
