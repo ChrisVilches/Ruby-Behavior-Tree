@@ -5,6 +5,8 @@ module BehaviorTree
     # Generates random trees.
     module Randomizer
       def build_random_tree(recursion_amount: 10)
+        raise ArgumentError, 'Recursion amount must be greater than 0' if recursion_amount < 1
+
         build do
           send(%i[sel seq].sample) do
             rand(3..5).times { recurse(recursion_amount).() }
