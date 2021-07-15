@@ -63,8 +63,8 @@ describe BehaviorTree::TreeStructure::Printer do
       # /A matches string beginning.
       expect(lines[0]).to match(/\A└─[a-z]/)
       expect(lines[1]).to match(/\A\s+├─[a-z]/)
-      expect(lines[2]).to match(/\A\s+│ ├─[a-z]/)
-      expect(lines[3]).to match(/\A\s+│ └─[a-z]/)
+      expect(lines[2]).to match(/\A\s+│     ├─[a-z]/)
+      expect(lines[3]).to match(/\A\s+│     └─[a-z]/)
       expect(lines[4]).to match(/\A\s+└─[a-z]/)
       expect(lines[5]).to match(/\A\s+└─[a-z]/)
     end
