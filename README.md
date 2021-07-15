@@ -454,23 +454,122 @@ Note: Other behavior tree implementations prefer the use of `sequence` control n
 
 ### Node API
 
+#### Status
+
+Every instance of node classes (i.e. descendants of `NodeBase` class) have a status object, where you can execute the following methods.
+
+**Setters**
+
+```ruby
+node.status.running!
+node.status.success!
+node.status.failure!
+
+node.status = other_node.status # Copy status from other node
+```
+
+**Querying status**
+
+```ruby
+node.status.running? # => boolean
+node.status.success? # => boolean
+node.status.failure? # => boolean
+```
+
+#### tick!
+
+As you have seen in other examples, all nodes have a `tick!` method, which as the name says, ticks the node.
+
+The first thing it does is always setting the node to `running`.
+
+The tick cycle has several parts, and some of them can be customized separately. Check the section about callbacks and hooks for more information.
+
 #### Callbacks and hooks
 
-tick!
+##### on_status_change(prev)
 
-halt!
+This method is executed everytime the node status changes. It's only triggered when there's a change (i.e. previous value and next value are different).
 
-on_status_change `on_status_change(prev, curr)`
+Therefore, the following code only triggers the callback once:
 
-on_tick
+```ruby
+# Current status is success.
+node.status.success? # => true
 
-ensure_after_tick
+node.status.failure! # Triggers the callback.
+node.status.failure! # Does not trigger.
+node.status.failure!
+```
 
-on_started_running
+```ruby
+class RandomStatusTask < BehaviorTree::Task
+  def on_tick
+    puts 'Being ticked...'
+    possible_status = [:running, :success, :failure]
+    status.send("#{possible_status.sample}!")
+  end
 
-on_finished_running
+  def on_status_change(prev)
+    # Only the previous status is passed as argument.
+    # The current status can be obtained this way.
+    curr = status
 
-should_tick?
+    puts "My status went from #{prev.to_sym} to #{curr.to_sym} (tick_count = #{tick_count})"
+  end
+end
+
+task = RandomStatusTask.new
+
+5.times { task.tick! }
+
+# Output:
+# My status went from __success__ to running (tick_count = 1)
+# Being ticked...
+# My status went from __running__ to failure (tick_count = 1)
+# My status went from __failure__ to running (tick_count = 2)
+# Being ticked...
+# My status went from __running__ to failure (tick_count = 2)
+# My status went from __failure__ to running (tick_count = 3)
+# Being ticked...
+# My status went from __running__ to success (tick_count = 3)
+# My status went from __success__ to running (tick_count = 4)
+# Being ticked...
+# My status went from __running__ to success (tick_count = 4)
+# My status went from __success__ to running (tick_count = 5)
+# Being ticked...
+# My status went from __running__ to failure (tick_count = 5)
+```
+
+In the output of the example above, one thing to note is that the first line (change from `success` to `running`) happens because `tick!` **immediately and always** sets the node to `running`. This happens even before the task logic (`on_tick` method) has been executed.
+
+The second line of the output is the `puts` of the actual task logic. The third line happens as a result of the task logic changing the status, therefore triggering a `on_status_change` call.
+
+##### on_started_running
+
+Similar to `on_status_change`, but only triggers when the node has been set to `running`.
+
+##### on_finished_running
+
+Similar to `on_status_change`, but only triggers when the node has been set to a status other than `running`.
+
+##### on_tick
+
+This is where custom logic for when the node is being ticked can be implemented.
+
+What you should implement differs depending on the node type.
+
+1. **For condition nodes:** don't override this method. Override `should_tick?` instead.
+2. **For control nodes:** Override the control-flow logic. In other words, you can create a control node that's not a `sequence` nor a `selector`, but something else entirely. See the custom control node example for reference.
+3. **For task nodes:** The task procedure.
+4. **For (non-condition) decorator nodes:** Currently overriding is not considered supported. Override the `decorate` method instead.
+
+##### should_tick?
+
+The default return value for this node is `true` for all nodes, except for condition nodes, where it should be overriden.
+
+This method must return a `boolean` value.
+
+Note: Currently all nodes have this method, however instead of overriding it in task nodes or other types of nodes, prefer creating a condition node and use it to decorate the node you want to conditionally tick.
 
 ### Add custom nodes to the DSL
 

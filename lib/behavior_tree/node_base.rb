@@ -34,6 +34,8 @@ module BehaviorTree
       @tick_count += 1
       @tick_prevented = !should_tick?
 
+      raise ShouldTickNotBooleanError, @tick_prevented unless [true, false].include? @tick_prevented
+
       unless @tick_prevented
         status.running!
         on_tick
@@ -101,7 +103,7 @@ module BehaviorTree
 
     def on_finished_running; end
 
-    def on_status_change(_prev, _curr); end
+    def on_status_change(_prev); end
 
     private
 
@@ -118,7 +120,7 @@ module BehaviorTree
         on_started_running
       end
 
-      on_status_change(prev, curr)
+      on_status_change(prev)
     end
   end
 

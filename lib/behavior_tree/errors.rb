@@ -62,4 +62,11 @@ module BehaviorTree
       super "Cannot register node '#{node_type}', it already exists."
     end
   end
+
+  # Exception for when the returned value in should_tick? is not a boolean.
+  class ShouldTickNotBooleanError < StandardError
+    def initialize(returned_value)
+      super "Method 'should_tick?' must return a boolean value. It returned #{returned_value} (#{returned_value.class})."
+    end
+  end
 end
