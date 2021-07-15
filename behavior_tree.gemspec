@@ -3,13 +3,13 @@
 require_relative 'lib/behavior_tree/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'behavior_tree' # TODO: Change?
+  spec.name          = 'behavior_tree'
   spec.version       = BehaviorTree::VERSION
   spec.authors       = ['Felo Vilches']
   spec.email         = ['felovilches@gmail.com']
 
-  spec.summary       = 'Behavior Tree (AI) library for Ruby.'
-  spec.homepage      = 'https://github.com/FeloVilches/Ruby-Behavior-Tree' # TODO: Change?
+  spec.summary       = 'A robust and customizable Ruby gem for creating Behavior Trees.'
+  spec.homepage      = 'https://github.com/FeloVilches/Ruby-Behavior-Tree'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.6.0')
 

@@ -48,6 +48,15 @@ describe BehaviorTree::Builder do
       before { 5.times { subject.tick! } }
 
       it { expect(tree.context).to eq({ a: 0, b: 5, c: 0 }) }
+
+      context 'when registering alias for custom node' do
+        before { described_class.register_alias(:tick_only_second_node, :tick_only_second_node_alias) }
+        it do
+          mapping = described_class.instance_variable_get :@node_type_mapping
+          expect(mapping[:tick_only_second_node][:alias]).to eq :tick_only_second_node_alias
+          expect(mapping[:tick_only_second_node_alias][:alias]).to eq :tick_only_second_node
+        end
+      end
     end
 
     context 'already existing node' do
@@ -65,7 +74,7 @@ describe BehaviorTree::Builder do
     end
 
     context 'original key exists' do
-      it { expect { described_class.register_alias(:force_success, :always_succeed) }.not_to raise_error }
+      before { described_class.register_alias(:force_success, :always_succeed) }
 
       it do
         mapping = described_class.instance_variable_get :@node_type_mapping
