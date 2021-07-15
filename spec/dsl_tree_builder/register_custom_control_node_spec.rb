@@ -18,6 +18,14 @@ module CustomControlNodes
       end
     end
   end
+
+  class CustomRunningTask < BehaviorTree::Task
+    def on_tick
+      context[:a] ||= 0
+      context[:a] += 1
+      status.running!
+    end
+  end
 end
 
 describe BehaviorTree::Builder do
@@ -65,6 +73,29 @@ describe BehaviorTree::Builder do
           described_class.register(:inv, Array, children: :single)
         end.to raise_error BehaviorTree::RegisterDSLNodeAlreadyExistsError
       end
+    end
+
+    context 'when a custom task is registered' do
+      before :all do
+        described_class.register(
+          :custom_running,
+          'CustomControlNodes::CustomRunningTask',
+          children: :none
+        )
+      end
+
+      let(:tree1) { described_class.build { custom_running } }
+      let(:tree2) { described_class.build { sel { custom_running } } }
+
+      before do
+        tree2.context = {}
+        100.times { tree2.tick! }
+      end
+
+      it { expect { tree1 }.not_to raise_error }
+      it { expect { tree2 }.not_to raise_error }
+      it { expect(tree2).to be_running }
+      it { expect(tree2.context[:a]).to eq 100 }
     end
   end
 

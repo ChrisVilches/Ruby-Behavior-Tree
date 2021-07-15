@@ -29,10 +29,6 @@ module BehaviorTree
         end
       end
 
-      def ensure_after_tick
-        status_map
-      end
-
       protected
 
       def repeat_while

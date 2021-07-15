@@ -47,6 +47,9 @@ module BehaviorTree
       #
       #       This error can be replicated by pasting a valid status object in IRB, such as by doing:
       #       BehaviorTree.const_get(:NodeStatus).new(:__running__) # Valid, but IRB crashes.
+      #
+      #       Ruby 3.0.0 -> Crash
+      #       Ruby 2.7.0 -> OK
       nil
     end
 
