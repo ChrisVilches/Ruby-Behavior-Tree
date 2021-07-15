@@ -31,7 +31,7 @@ module BehaviorTree
 
           last_child ? vertical_lines_continues.delete(depth) : vertical_lines_continues << depth
 
-          space = (0...depth).map { |d| vertical_lines_continues.include?(d) ? '│ ' : '  ' }.join
+          space = (0...depth).map { |d| vertical_lines_continues.include?(d) ? '│     ' : '      ' }.join
           connector = last_child ? '└─' : '├─'
 
           "#{space}#{connector}#{class_simple_name(node)} #{status_string(node)} #{tick_count_string(node)}"
@@ -88,10 +88,15 @@ module BehaviorTree
       end
 
       # Changes the name of some classes (maps it to a better name).
+      # Mapping is simply based on taste.
       def pretty_name(name)
         case name
         when 'task_base'
           'task'
+        when 'force_success'
+          'forcesuccess'
+        when 'force_failure'
+          'forcefailure'
         else
           name
         end
