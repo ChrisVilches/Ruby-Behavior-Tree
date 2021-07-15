@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   # spec.metadata['source_code_uri'] = 'TODO: Put your gem's public repo URL here.'
   # spec.metadata['changelog_uri'] = 'TODO: Put your gem's CHANGELOG.md URL here.'
 
-  spec.files         = Dir[File.join(__dir__, 'lib', '**', '*')]
+  spec.files         = Dir[File.join('lib', '**', '*')]
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
