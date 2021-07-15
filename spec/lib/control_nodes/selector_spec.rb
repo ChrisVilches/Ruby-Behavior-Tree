@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 describe BehaviorTree::Selector do
-  let(:completes_with_failure) { false }
-  let(:nop2) { BehaviorTree::Nop.new(2, completes_with_failure: completes_with_failure) }
-  let(:nop3) { BehaviorTree::Nop.new(3, completes_with_failure: completes_with_failure) }
-  let(:children) { subject.children }
   subject { described_class.new(children) }
+
+  let(:completes_with_failure) { false }
   let(:nop_success) { BehaviorTree::Nop.new(2, completes_with_failure: false) }
   let(:nop_fail1) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
   let(:nop_fail2) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
   let(:nop_fail3) { BehaviorTree::Nop.new(2, completes_with_failure: true) }
+  let(:nop2) { BehaviorTree::Nop.new(2, completes_with_failure: completes_with_failure) }
+  let(:nop3) { BehaviorTree::Nop.new(3, completes_with_failure: completes_with_failure) }
+  let(:children) { subject.children }
 
   describe '.tick!' do
     context 'has one child (requires 2 ticks)' do
@@ -21,12 +22,14 @@ describe BehaviorTree::Selector do
 
       context 'has been ticked once' do
         before { subject.tick! }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses :running }
       end
 
       context 'has been ticked twice' do
         before { 2.times { subject.tick! } }
+
         it { is_expected.to be_success }
         it { is_expected.to have_children_statuses :success }
       end
@@ -42,21 +45,26 @@ describe BehaviorTree::Selector do
 
       context 'has been ticked once' do
         before { subject.tick! }
+
         it { is_expected.to be_running }
+
         it "gets 'running' status from child, so the next child is not ticked yet" do
-          is_expected.to have_children_statuses %i[running success]
+          expect(subject).to have_children_statuses %i[running success]
         end
+
         it { is_expected.to have_children_ticked_times [1, 0] }
       end
 
       context 'has been ticked twice' do
         before { 2.times { subject.tick! } }
+
         it { is_expected.to be_success }
         it { is_expected.to have_children_statuses :success }
         it { is_expected.to have_children_ticked_times [2, 0] }
 
         context 'nop operation ends with failure' do
           let(:completes_with_failure) { true }
+
           it { is_expected.to be_running }
           it { is_expected.to have_children_statuses %i[failure running] }
           it { is_expected.to have_children_ticked_times [2, 1] }
@@ -65,12 +73,14 @@ describe BehaviorTree::Selector do
 
       context 'has been ticked three times' do
         before { 3.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success] }
         it { is_expected.to have_children_ticked_times [3, 0] }
 
         context 'nop operation ends with failure' do
           let(:completes_with_failure) { true }
+
           it { is_expected.to be_running }
           it { is_expected.to have_children_statuses %i[failure running] }
 
@@ -85,8 +95,10 @@ describe BehaviorTree::Selector do
 
     context 'no operation is selected (all fail)' do
       let(:children) { [nop_fail1, nop_fail2, nop_fail3] }
+
       context '1 tick' do
         before { subject.tick! }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_been_running_for_ticks 1 }
@@ -96,6 +108,7 @@ describe BehaviorTree::Selector do
 
       context '2 tick' do
         before { 2.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[failure running success] }
         it { is_expected.to have_been_running_for_ticks 2 }
@@ -105,6 +118,7 @@ describe BehaviorTree::Selector do
 
       context '3 tick' do
         before { 3.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[failure failure running] }
         it { is_expected.to have_been_running_for_ticks 3 }
@@ -114,6 +128,7 @@ describe BehaviorTree::Selector do
 
       context '4 tick' do
         before { 4.times { subject.tick! } }
+
         it { is_expected.to be_failure }
         it { is_expected.to have_children_statuses %i[success success success] } # Halted.
         it { is_expected.to have_been_running_for_ticks 4 }
@@ -123,6 +138,7 @@ describe BehaviorTree::Selector do
 
       context '5 tick' do
         before { 5.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_been_running_for_ticks 1 }
@@ -133,8 +149,10 @@ describe BehaviorTree::Selector do
 
     context 'second operation is selected' do
       let(:children) { [nop_fail1, nop_success, nop_fail2] }
+
       context '1 tick' do
         before { subject.tick! }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_been_running_for_ticks 1 }
@@ -144,6 +162,7 @@ describe BehaviorTree::Selector do
 
       context '2 tick' do
         before { 2.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[failure running success] }
         it { is_expected.to have_been_running_for_ticks 2 }
@@ -153,6 +172,7 @@ describe BehaviorTree::Selector do
 
       context '3 tick' do
         before { 3.times { subject.tick! } }
+
         it { is_expected.to be_success }
         it { is_expected.to have_children_statuses %i[success success success] } # Halted.
         it { is_expected.to have_been_running_for_ticks 3 }
@@ -162,6 +182,7 @@ describe BehaviorTree::Selector do
 
       context '4 tick' do
         before { 4.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_children_statuses %i[running success success] }
         it { is_expected.to have_been_running_for_ticks 1 }
@@ -171,6 +192,7 @@ describe BehaviorTree::Selector do
 
       context '5 tick' do
         before { 5.times { subject.tick! } }
+
         it { is_expected.to be_running }
         it { is_expected.to have_been_running_for_ticks 2 }
         it { is_expected.to have_children_running_for_ticks [2, 1, 0] }
@@ -179,6 +201,7 @@ describe BehaviorTree::Selector do
 
       context '6 tick' do
         before { 6.times { subject.tick! } }
+
         it { is_expected.to be_success }
         it { is_expected.to have_been_running_for_ticks 3 }
         it { is_expected.to have_children_running_for_ticks [2, 2, 0] }

@@ -2,7 +2,7 @@
 
 describe BehaviorTree::Builder do
   subject do
-    BehaviorTree::Builder.build do
+    described_class.build do
       inverter do
         t { status.success! }
       end
@@ -15,6 +15,7 @@ describe BehaviorTree::Builder do
 
   context 'tree with inverter and task' do
     before { subject.tick! }
+
     it { is_expected.to be_instance_of BehaviorTree::Tree }
     it { expect(subject.size).to eq 3 }
 

@@ -117,6 +117,7 @@ describe BehaviorTree::TreeStructure::Algorithms do
   describe '.repeated_nodes (and the similar method .uniq_nodes?)' do
     context 'has a repeated node (without cycles)' do
       subject { tree_with_repeated_task }
+
       it { expect(subject.uniq_nodes?).to be false }
       it { expect(subject.repeated_nodes.to_a).to eq [nop1] }
       it { expect(subject.repeated_nodes.size).to eq 1 }
@@ -124,12 +125,14 @@ describe BehaviorTree::TreeStructure::Algorithms do
 
     context 'has no repeated node' do
       subject { tree_without_repeated_nodes }
+
       it { expect(subject.uniq_nodes?).to be true }
       it { expect(subject.repeated_nodes.to_a).to eq [] }
     end
 
     context 'has a cycle' do
       subject { tree_with_cycle }
+
       it 'detects the repeated node (not the cycle)' do
         expect(subject.uniq_nodes?).to be false
       end
@@ -142,28 +145,34 @@ describe BehaviorTree::TreeStructure::Algorithms do
 
   describe '.cycle?' do
     subject { tree.cycle? }
+
     context 'has a repeated node (without cycles)' do
       let(:tree) { tree_with_repeated_task }
+
       it { is_expected.to be false }
     end
 
     context 'has no repeated node' do
       let(:tree) { tree_without_repeated_nodes }
+
       it { is_expected.to be false }
     end
 
     context 'has a cycle' do
       let(:tree) { tree_with_cycle }
+
       it { is_expected.to be true }
     end
 
     context 'has a long cycle' do
       let(:tree) { tree_with_long_cycle }
+
       it { is_expected.to be true }
     end
 
     context 'has a complex cycle' do
       let(:tree) { tree_with_complex_cycle }
+
       it { is_expected.to be true }
     end
   end
@@ -181,12 +190,13 @@ describe BehaviorTree::TreeStructure::Algorithms do
     let(:result_indexes) { result.map { |r| r[2] } }
     let(:result_parents) { result.map { |r| r.last.class.name.split('::').last[0..2].downcase } }
 
-    shared_examples :indexes_are_ordered do
+    shared_examples 'indexes are ordered' do
       it { expect(result_indexes).to eq (0...result_indexes.count).to_a }
     end
     context 'BFS' do
       let(:traverse_type) { :breadth }
-      it_behaves_like :indexes_are_ordered
+
+      it_behaves_like 'indexes are ordered'
       it { expect(result_parents).to eq %w[tre sel sel seq seq seq] }
       it { expect(result_nodes).to eq %w[sel seq seq nop nop tas] }
       it { expect(result_depth).to eq [0, 1, 1, 2, 2, 2] }
@@ -194,7 +204,8 @@ describe BehaviorTree::TreeStructure::Algorithms do
 
     context 'DFS preorder' do
       let(:traverse_type) { :depth_preorder }
-      it_behaves_like :indexes_are_ordered
+
+      it_behaves_like 'indexes are ordered'
       it { expect(result_parents).to eq %w[tre sel seq seq sel seq] }
       it { expect(result_nodes).to eq %w[sel seq nop nop seq tas] }
       it { expect(result_depth).to eq [0, 1, 2, 2, 1, 2] }
@@ -202,7 +213,8 @@ describe BehaviorTree::TreeStructure::Algorithms do
 
     context 'DFS postorder' do
       let(:traverse_type) { :depth_postorder }
-      it_behaves_like :indexes_are_ordered
+
+      it_behaves_like 'indexes are ordered'
       it { expect(result_parents).to eq %w[seq seq sel seq sel tre] }
       it { expect(result_nodes).to eq %w[nop nop seq tas seq sel] }
       it { expect(result_depth).to eq [2, 2, 1, 2, 1, 0] }
@@ -210,6 +222,7 @@ describe BehaviorTree::TreeStructure::Algorithms do
 
     context 'incorrect traversal type' do
       let(:traverse_type) { :invalid }
+
       it { expect { result }.to raise_error(ArgumentError).with_message(/must be in/) }
     end
   end

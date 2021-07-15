@@ -7,7 +7,7 @@ describe BehaviorTree::Builder do
       node_type_mapping = described_class.instance_variable_get(:@node_type_mapping)
 
       node_type_mapping.each do |k, v|
-        expect(v[:alias]).to_not eq k
+        expect(v[:alias]).not_to eq k
       end
     end
   end

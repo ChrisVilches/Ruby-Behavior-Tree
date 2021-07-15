@@ -6,7 +6,9 @@ describe BehaviorTree::NodeIterators::PrioritizeRunning do
   describe '.prioritize_running' do
     context 'has some children' do
       let(:nops) { [BehaviorTree::Nop.new, BehaviorTree::Nop.new] }
+
       before { subject << nops }
+
       it { expect(subject.prioritize_running).to be_instance_of Enumerator }
       it { expect(subject.prioritize_running.to_a).to eq nops }
       it { expect(subject.prioritize_running.count).to eq 2 }

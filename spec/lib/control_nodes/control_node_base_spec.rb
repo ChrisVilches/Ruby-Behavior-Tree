@@ -46,8 +46,9 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
 
     context 'child class inherits from selector and has no explicitly defined traversal strategy' do
       subject { TestControlNodes::MySelector.new(nops) }
+
       it 'inherits on_tick implementation (does not raise NotImplementedError)' do
-        expect { subject.send :on_tick }.to_not raise_error
+        expect { subject.send :on_tick }.not_to raise_error
       end
 
       it 'checks entire class hierarchy (not just parent) to find a default traversal_strategy' do
@@ -59,6 +60,7 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
 
   describe '.validate_enum!' do
     subject { TestControlNodes::StrategyToString.new(nops) }
+
     it do
       expect do
         subject.send(:tick_each_children) { :empty_block }
@@ -71,27 +73,33 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
 
     it { expect(subject.send(:tick_each_children)).to be_instance_of Enumerator }
     it { expect(subject.send(:tick_each_children).each).to be_instance_of Enumerator }
+
     it 'can chain filter' do
       filtered = subject.send(:tick_each_children).filter do |child|
         child.instance_variable_get(:@necessary_ticks) == 2
       end
       expect(filtered).to eq [nops[1]]
     end
+
     it 'returns the array when using a block' do
       expect(subject.send(:tick_each_children) { :empty_block }).to eq nops
     end
 
     context 'having a block' do
       before { 10.times { subject.send(:tick_each_children) { :empty_block } } }
+
       it { is_expected.to have_children_ticked_times [10, 10] }
     end
 
     context 'not having a block' do
       before { 10.times { subject.send(:tick_each_children) } }
+
       it { is_expected.to have_children_ticked_times [0, 0] }
     end
+
     context 'without children' do
       let(:nops) { [] }
+
       context 'with block' do
         it do
           expect do
@@ -99,8 +107,9 @@ describe BehaviorTree.const_get(:ControlNodeBase) do
           end.to raise_error BehaviorTree::InvalidLeafNodeError
         end
       end
+
       context 'without block' do
-        it { expect { subject.send(:tick_each_children) }.to_not raise_error }
+        it { expect { subject.send(:tick_each_children) }.not_to raise_error }
       end
     end
   end

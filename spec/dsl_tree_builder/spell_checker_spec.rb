@@ -2,7 +2,7 @@
 
 describe BehaviorTree::Builder do
   let(:tree_using_alias) do
-    BehaviorTree::Builder.build do
+    described_class.build do
       inverter do
         seqq do
           :empty_block
@@ -12,7 +12,7 @@ describe BehaviorTree::Builder do
   end
 
   let(:tree) do
-    BehaviorTree::Builder.build do
+    described_class.build do
       inverter do
         sequencee do
           :empty_block

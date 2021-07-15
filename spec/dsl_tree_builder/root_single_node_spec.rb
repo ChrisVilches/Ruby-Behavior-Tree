@@ -12,10 +12,12 @@ describe BehaviorTree::Builder do
       t
     end
   end
+
   describe '.build' do
     context 'tree has a single node' do
-      it { expect { tree_valid }.to_not raise_error }
+      it { expect { tree_valid }.not_to raise_error }
     end
+
     context 'tree has multiple nodes' do
       it do
         expect { tree_invalid }.to raise_error(BehaviorTree::DSLStandardError).with_message(/should be a single node/)

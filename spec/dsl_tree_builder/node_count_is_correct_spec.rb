@@ -2,21 +2,16 @@
 
 describe BehaviorTree::Builder do
   let(:tree1) do
-    BehaviorTree::Builder.build do
+    described_class.build do
       inverter do
         task { status.success! }
       end
     end
   end
-
-  before :all do
-    BehaviorTree::Builder.register(:nop, BehaviorTree::Nop, children: :none)
-  end
-
   let(:tree2) do
     another_tree = tree1
 
-    BehaviorTree::Builder.build do
+    described_class.build do
       inverter do
         seq do
           t
@@ -38,6 +33,10 @@ describe BehaviorTree::Builder do
         end
       end
     end
+  end
+
+  before :all do
+    described_class.register(:nop, BehaviorTree::Nop, children: :none)
   end
 
   context 'tree with inverter and task' do

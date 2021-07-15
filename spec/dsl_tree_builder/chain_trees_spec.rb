@@ -8,7 +8,7 @@ describe BehaviorTree::Builder do
     5.times { selector << BehaviorTree::TaskBase.new { :empty_block } }
     oo_tree = BehaviorTree::Tree.new(selector)
 
-    BehaviorTree::Builder.build do
+    described_class.build do
       inverter do
         chain(oo_tree)
       end
@@ -16,7 +16,7 @@ describe BehaviorTree::Builder do
   end
 
   let(:oo_tree_with_chained_dsl_tree) do
-    dsl_tree = BehaviorTree::Builder.build do
+    dsl_tree = described_class.build do
       inverter do
         seq do
           t { :empty_block }
@@ -43,15 +43,16 @@ describe BehaviorTree::Builder do
 
     context 'chain used in the first node' do
       let(:tree) do
-        tree = BehaviorTree::Builder.build { seq { t } }
-        BehaviorTree::Builder.build { chain tree }
+        tree = described_class.build { seq { t } }
+        described_class.build { chain tree }
       end
+
       it { expect(tree.size).to eq 3 }
     end
 
     context 'tree to be chained is not valid tree' do
       it do
-        expect { BehaviorTree::Builder.build { chain nil } }.to raise_error BehaviorTree::DSLStandardError
+        expect { described_class.build { chain nil } }.to raise_error BehaviorTree::DSLStandardError
       end
     end
   end

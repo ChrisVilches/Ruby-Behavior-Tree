@@ -13,7 +13,9 @@ describe BehaviorTree::NodeIterators::AllNodes do
   describe '.all_nodes' do
     context 'has some children' do
       let(:nops) { [BehaviorTree::Nop.new, BehaviorTree::Nop.new] }
+
       before { subject << nops }
+
       it { expect(subject.all_nodes).to be_instance_of Enumerator }
       it { expect(subject.all_nodes.map(&:itself)).to eq nops }
     end

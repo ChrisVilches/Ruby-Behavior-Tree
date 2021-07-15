@@ -44,8 +44,10 @@ describe BehaviorTree::TreeStructure::Printer do
   describe '.class_simple_name' do
     context 'has module' do
       let(:spell_checker) { DidYouMean::SpellChecker.new dictionary: [] }
+
       it { expect(subject.send(:class_simple_name, spell_checker)).to eq 'spell_checker' }
     end
+
     context 'has no module' do
       it { expect(subject.send(:class_simple_name, [])).to eq 'array' }
     end
@@ -53,8 +55,10 @@ describe BehaviorTree::TreeStructure::Printer do
 
   describe '.tree_lines' do
     let(:lines) { subject.send :tree_lines }
+
     it { expect(lines).to be_an Array }
     it { expect(lines.count).to eq 6 }
+
     it do
       # /A matches string beginning.
       expect(lines[0]).to match(/\A└─[a-z]/)

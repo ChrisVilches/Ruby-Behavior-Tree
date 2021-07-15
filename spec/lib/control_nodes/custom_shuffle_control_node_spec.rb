@@ -23,10 +23,12 @@ module TestControlNodes
 end
 
 describe TestControlNodes::Shuffle do
+  subject { shuffle_sequence }
+
   let(:shuffle_sequence) { described_class.new }
   let(:nops) { (1..20).map { BehaviorTree::Nop.new 2 } }
+
   before { shuffle_sequence << nops }
-  subject { shuffle_sequence }
 
   context 'ticked 0 times' do
     it { is_expected.to be_success }
@@ -56,7 +58,7 @@ describe TestControlNodes::Shuffle do
       expect(subject).to be_success
 
       subject.tick! # Change status from 'success' to 'running'
-      expect(cached_order).to_not eq current_shuffled_order.()
+      expect(cached_order).not_to eq current_shuffled_order.()
       expect(subject).to be_running
     end
   end
