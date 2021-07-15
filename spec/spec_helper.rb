@@ -4,6 +4,8 @@ require 'simplecov'
 require 'bundler/setup'
 require 'behavior_tree'
 
+# TODO: Simplecov is not working properly. For example, randomizer is not tested, but it throws 100% coverage.
+#       Also file is empty.
 SimpleCov.start do
   add_filter 'spec/'
 end
