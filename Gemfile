@@ -4,13 +4,10 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'colorize'
-
 group :development do
-  gem 'guard'
-  gem 'guard-shell'
-  gem 'rb-fsevent', '~> 0.9'
   gem 'rubocop'
+  gem 'rubocop-rake'
+  gem 'rubocop-rspec'
 end
 
 group :development, :test do
