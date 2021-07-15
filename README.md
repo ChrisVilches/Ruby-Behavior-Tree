@@ -1,6 +1,6 @@
 # Ruby Behavior Tree
 
-![](https://api.travis-ci.com/FeloVilches/Ruby-Behavior-Tree.svg?branch=main)
+[![Travis CI](https://api.travis-ci.com/FeloVilches/Ruby-Behavior-Tree.svg?branch=main)](https://travis-ci.org/github/FeloVilches/Ruby-Behavior-Tree) [![Gem Version](https://badge.fury.io/rb/behavior_tree.svg)](https://rubygems.org/gems/behavior_tree)
 
 ============
 
