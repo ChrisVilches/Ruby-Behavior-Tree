@@ -12,3 +12,11 @@ desc 'Run RuboCop'
 RuboCop::RakeTask.new(:lint) do |task|
   task.options = ['--fail-level', 'autocorrect']
 end
+
+desc 'Build and install locally'
+task :install do
+  temp_file = 'temp_file.delete_me.gem'
+  `gem build --output=#{temp_file}`
+  puts `gem install #{temp_file}`
+  `rm #{temp_file}`
+end

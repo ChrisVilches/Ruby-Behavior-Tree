@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'lib/behavior_tree/version'
+
 Gem::Specification.new do |spec|
-  spec.name          = 'ruby_behavior_tree' # TODO: Change?
-  spec.version       = '0.0.1'
+  spec.name          = 'behavior_tree' # TODO: Change?
+  spec.version       = BehaviorTree::VERSION
   spec.authors       = ['Felo Vilches']
   spec.email         = ['felovilches@gmail.com']
 

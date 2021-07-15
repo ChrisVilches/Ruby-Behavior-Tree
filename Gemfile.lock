@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby_behavior_tree (0.0.1)
+    behavior_tree (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -87,6 +87,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  behavior_tree!
   colorize
   guard
   guard-shell
@@ -94,7 +95,6 @@ DEPENDENCIES
   rb-fsevent (~> 0.9)
   rspec
   rubocop
-  ruby_behavior_tree!
   simplecov
 
 BUNDLED WITH

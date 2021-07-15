@@ -25,7 +25,6 @@ module BehaviorTree
         repeated_nodes.empty?
       end
 
-      # TODO: Should skip visited nodes too? It seems it's unnecessary.
       def cycle?
         current_path = Set.new
 

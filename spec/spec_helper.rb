@@ -2,7 +2,7 @@
 
 require 'simplecov'
 require 'bundler/setup'
-require 'ruby_behavior_tree'
+require 'behavior_tree'
 
 SimpleCov.start do
   add_filter 'spec/'
