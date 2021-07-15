@@ -4,6 +4,8 @@ module BehaviorTree
   module Dsl
     # Helpers for DSL.
     module Utils
+      private
+
       # Convert a class name with namespace into a constant.
       # It returns the class itself if it's already a class.
       # @param class_name [String]

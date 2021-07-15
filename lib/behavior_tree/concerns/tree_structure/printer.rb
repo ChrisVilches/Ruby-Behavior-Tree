@@ -76,7 +76,17 @@ module BehaviorTree
       end
 
       def class_simple_name(node)
-        snake_case(node.class.name.split('::').last)
+        pretty_name snake_case(node.class.name.split('::').last)
+      end
+
+      # Changes the name of some classes (maps it to a better name).
+      def pretty_name(name)
+        case name
+        when 'task_base'
+          'task'
+        else
+          name
+        end
       end
     end
   end

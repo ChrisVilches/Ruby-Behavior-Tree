@@ -4,6 +4,8 @@ module BehaviorTree
   module Dsl
     # Helpers for spellchecking, and correcting user input in the DSL builder.
     module SpellChecker
+      private
+
       def raise_node_type_not_exists(missing_method)
         suggestion = most_similar_name missing_method
         method_alias = @node_type_mapping.dig suggestion, :alias
