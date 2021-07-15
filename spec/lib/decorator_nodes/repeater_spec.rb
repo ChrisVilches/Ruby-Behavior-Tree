@@ -13,6 +13,7 @@ describe BehaviorTree::Decorators::Repeater do
     context 'child returns success' do
       before { subject.tick! }
       it { is_expected.to be_success }
+      it { expect(subject.tick_count).to eq 1 }
       it { is_expected.to have_children_ticked_times [3] }
     end
 
@@ -20,6 +21,7 @@ describe BehaviorTree::Decorators::Repeater do
       let(:completes_with_failure) { true }
       before { subject.tick! }
       it { is_expected.to be_failure }
+      it { expect(subject.tick_count).to eq 1 }
       it { is_expected.to have_children_ticked_times [1] }
     end
 
@@ -37,10 +39,12 @@ describe BehaviorTree::Decorators::Repeater do
         before { subject.tick! }
         # When ticked the second time, it completes with success, and the retry
         # kicks in. The retry ticks it once more, and it becomes running (stop retry and return).
+        it { expect(subject.tick_count).to eq 2 }
         it { is_expected.to have_children_ticked_times [3] }
         it { is_expected.to be_running }
         context 'completes with failure status' do
           let(:completes_with_failure) { true }
+          it { expect(subject.tick_count).to eq 2 }
           it { is_expected.to have_children_ticked_times [2] }
           it { is_expected.to be_failure }
         end
