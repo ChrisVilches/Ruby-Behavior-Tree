@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../node_base'
-require_relative '../concerns/validations/proc_or_block'
-
 module BehaviorTree
   # A task (leaf) node.
   class TaskBase < NodeBase

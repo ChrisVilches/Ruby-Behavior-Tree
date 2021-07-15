@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative './repeat_times_base'
-
 module BehaviorTree
   module Decorators
     # Repeat N times while child has success status.
