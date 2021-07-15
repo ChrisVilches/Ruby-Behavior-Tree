@@ -1,14 +1,11 @@
-# Ruby Behavior Tree
+# Behavior Tree (Ruby)
 
 [![Travis CI](https://api.travis-ci.com/FeloVilches/Ruby-Behavior-Tree.svg?branch=main)](https://travis-ci.org/github/FeloVilches/Ruby-Behavior-Tree) [![Gem Version](https://badge.fury.io/rb/behavior_tree.svg)](https://rubygems.org/gems/behavior_tree)
 
-============
 
-(Copy from the auto-generated readme file. Some names changed, so some things are incorrect.)
+### TODO Fix the logo
+[Behavior Tree](./assets/logo.png)](https://rubygems.org/gems/behavior_tree)
 
-WIP
-
-============
 
 # Ruby::Behavior::Tree
 
@@ -16,12 +13,12 @@ Welcome to your new gem! In this directory, you'll find the files you need to be
 
 TODO: Delete this and the text above, and describe your gem
 
-## Installation
+## Quick start
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'ruby-behavior-tree'
+gem 'behavior_tree'
 ```
 
 And then execute:
@@ -30,7 +27,50 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ruby-behavior-tree
+    $ gem install behavior_tree
+
+### Create a tree using the DSL
+
+### Use object oriented programming
+
+## Basics
+
+### Node status
+
+### Types of nodes
+
+## Create custom nodes
+
+### Node API
+
+#### Task nodes
+
+#### Control nodes
+
+#### Decorators
+
+#### Condition nodes
+
+### Callbacks and hooks
+
+#### tick!
+
+#### halt!
+
+### Add custom nodes to the DSL
+
+## Verify your tree
+
+### Check correct tree structure
+
+### Visualize a tree
+
+## Miscellaneous
+
+### Generate a random tree
+
+
+
 
 ## Usage
 
