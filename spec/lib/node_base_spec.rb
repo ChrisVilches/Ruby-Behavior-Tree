@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+module CustomNodes
+  class WrongShouldTick < BehaviorTree.const_get(:NodeBase)
+    private
+
+    def should_tick?
+      0
+    end
+  end
+end
+
 describe BehaviorTree.const_get(:NodeBase) do
   subject { described_class.new }
 
@@ -62,5 +72,10 @@ describe BehaviorTree.const_get(:NodeBase) do
       it { is_expected.to have_been_running_for_ticks 1 }
       it { is_expected.to be_running }
     end
+  end
+
+  context 'when should_tick? implementation is wrong' do
+    let(:custom_node) { CustomNodes::WrongShouldTick.new }
+    it { expect { custom_node.tick! }.to raise_error(BehaviorTree::ShouldTickNotBooleanError) }
   end
 end

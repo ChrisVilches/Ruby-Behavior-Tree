@@ -284,7 +284,9 @@ task.tick!; task.status #=> running
 task.tick!; task.status #=> success
 task.tick!; task.status #=> success
 ```
-
+TODO: Remove Node API from here, maybe
+    its more like a general explanation of nodes
+    not about creating nodes specifically
 **Example #4: Same as #3, but using lambdas instead**
 
 When using lambdas instead of normal `Proc` (or blocks), you must pass the `context` and `node` arguments if you want to access their data. Both parameters are optional.
@@ -452,9 +454,9 @@ my_tree.print
 
 Note: Other behavior tree implementations prefer the use of `sequence` control nodes, and placing conditional nodes as a leaves, but with the role of simply returning `failure` or `success`. Since sequences execute the next node only if the previous one succeeded, this also works as a conditional node. In this implementation, however, both patterns are available and you are free to choose which one to use.
 
-### Node API
+## Node API
 
-#### Status
+### Status
 
 Every instance of node classes (i.e. descendants of `NodeBase` class) have a status object, where you can execute the following methods.
 
@@ -476,7 +478,7 @@ node.status.success? # => boolean
 node.status.failure? # => boolean
 ```
 
-#### tick!
+### tick!
 
 As you have seen in other examples, all nodes have a `tick!` method, which as the name says, ticks the node.
 
@@ -484,9 +486,9 @@ The first thing it does is always setting the node to `running`.
 
 The tick cycle has several parts, and some of them can be customized separately. Check the section about callbacks and hooks for more information.
 
-#### Callbacks and hooks
+### Callbacks and hooks
 
-##### on_status_change(prev)
+#### on_status_change(prev)
 
 This method is executed everytime the node status changes. It's only triggered when there's a change (i.e. previous value and next value are different).
 
@@ -544,15 +546,15 @@ In the output of the example above, one thing to note is that the first line (ch
 
 The second line of the output is the `puts` of the actual task logic. The third line happens as a result of the task logic changing the status, therefore triggering a `on_status_change` call.
 
-##### on_started_running
+#### on_started_running
 
 Similar to `on_status_change`, but only triggers when the node has been set to `running`.
 
-##### on_finished_running
+#### on_finished_running
 
 Similar to `on_status_change`, but only triggers when the node has been set to a status other than `running`.
 
-##### on_tick
+#### on_tick
 
 This is where custom logic for when the node is being ticked can be implemented.
 
@@ -563,7 +565,7 @@ What you should implement differs depending on the node type.
 3. **For task nodes:** The task procedure.
 4. **For (non-condition) decorator nodes:** Currently overriding is not considered supported. Override the `decorate` method instead.
 
-##### should_tick?
+#### should_tick?
 
 The default return value for this node is `true` for all nodes, except for condition nodes, where it should be overriden.
 
