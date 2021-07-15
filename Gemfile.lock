@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    behavior_tree (0.1.5)
+    behavior_tree (0.1.6)
       colorize (~> 0.8.1)
 
 GEM
@@ -69,4 +69,4 @@ DEPENDENCIES
   simplecov
 
 BUNDLED WITH
-   2.2.21
+   2.1.2
