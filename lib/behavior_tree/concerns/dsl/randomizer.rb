@@ -44,8 +44,8 @@ module BehaviorTree
           proc { force_success(&recurse(recursions_left)) },
           proc { force_failure(&recurse(recursions_left)) },
           proc { inv(&recurse(recursions_left)) },
-          proc { re_try(2, &recurse(recursions_left)) },
-          proc { repeater(2, &recurse(recursions_left)) }
+          proc { re_try(20, &recurse(recursions_left)) },
+          proc { repeater(20, &recurse(recursions_left)) }
         ]
       end
 

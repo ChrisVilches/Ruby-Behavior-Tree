@@ -7,12 +7,16 @@ module BehaviorTree
     # Algorithm to print tree.
     module Printer
       def print
-        puts '∅' # Style for the root node.
-        tree_lines.each { |line| puts line }
-        puts ''
-        puts cycle_string
-        puts uniq_nodes_string
-        puts size_string
+        lines = []
+        lines << '∅' # Style for the root node.
+        lines += tree_lines
+        lines << ''
+        lines << cycle_string
+        lines << uniq_nodes_string
+        lines << size_string
+        lines << tree_tick_count_string
+
+        puts lines.join "\n"
       end
 
       private
@@ -64,6 +68,10 @@ module BehaviorTree
         count = node.tick_count
         color = count.zero? ? :light_red : :light_black
         ColorizedString["(#{node.tick_count} ticks)"].colorize(color)
+      end
+
+      def tree_tick_count_string
+        "Tree has been ticked #{tick_count} times."
       end
 
       # Copied from Rails' ActiveSupport.
