@@ -24,90 +24,118 @@ Or install it yourself as:
 
     $ gem install behavior_tree
 
-### Create a tree using the DSL
+### Build your first tree
+
+Require the gem if necessary:
+
+```ruby
+require 'behavior_tree'
+```
 
 Create a tree using the DSL:
 
-TODO: Create an example that does something lol.
-```
-BehaviorTree::Builder.build do
+```ruby
+my_tree = BehaviorTree::Builder.build do
   sequence do
-    task1
-    custom_condition do
-      task2
+    task {
+      puts "I'm a task!"
+      status.success!
+    }
+    condition ->(context) { context[:some_value] < 200 } do
+      task {
+        context[:some_value] += 1
+        status.success!
+      }
     end
-    selector do
-
-    end
+    task { context[:some_value] > 100 ? status.failure! : status.success! }
   end
 end
+
+my_tree.print
+# Output:
+# ∅
+# └─sequence success (0 ticks)
+#       ├─task success (0 ticks)
+#       ├─condition success (0 ticks)
+#       │     └─task success (0 ticks)
+#       └─task success (0 ticks)
 ```
 
-Custom node classes can be added to the DSL programmatically, and trees created without the DSL (see section below) can also be chained to a branch as a subtree.
+Later in the guide you'll learn how to add your own custom classes so they are available inside the DSL as well.
 
-### Use object oriented programming
-
-If the tree or part of it cannot be built with the DSL, then you can build it programmatically like so:
+If the tree or part of it cannot be built using the DSL, you can build it programmatically like so:
 
 ```ruby
 # Initialize an empty sequence.
 sequence = BehaviorTree::Sequence.new
 
-# Task with inline logic.
-task1 = BehaviorTree::Task.new { puts "I'm a task" }
+# Creating some tasks. You can also create tasks by extending BehaviorTree::Task,
+# keep reading to learn how.
+task1 = BehaviorTree::Task.new {
+  puts 'Hello world'
+  status.success!
+}
 
-# Task with logic defined inside the class definition (custom).
-task2 = MyCustomTask.new
+task2 = BehaviorTree::Task.new {
+  puts 'Another simple task'
+  status.success!
+}
 
 # Add as children.
 sequence << task1
 sequence << task2
 
 # Finally build the tree.
-my_tree = BehaviorTree::Tree.new sequence
+another_tree = BehaviorTree::Tree.new sequence
 
-my_tree.tick!
+another_tree.print
 # Output:
-# I'm a task
-
-my_tree.print
 # ∅
-# └─sequence running (1 ticks)
-#       ├─task running (1 ticks)
+# └─sequence success (0 ticks)
+#       ├─task success (0 ticks)
 #       └─task success (0 ticks)
 ```
 
-### Chain trees together
-
-You can join trees that were created with any of the above methods (DSL or simple Ruby object programming) by doing something like this:
-
-**Example #1: Chain a tree inside the DSL**
+You can join trees that were created with any of the above methods (DSL or simple Ruby object programming). Let's join both of the trees we just created:
 
 ```ruby
-# Create selector without children.
-selector = BehaviorTree::Selector.new
+sequence << my_tree
 
-# Create a tree with the selector as child.
-another_tree = BehaviorTree::Tree.new(selector)
-
-# Create a tree using the DSL, but chain the previously created tree.
-BehaviorTree::Builder.build do
-  inverter do
-    chain(another_tree)
-  end
-end
+another_tree.print
+# Output:
+# ∅
+# └─sequence success (0 ticks)
+#       ├─task success (0 ticks)
+#       ├─task success (0 ticks)
+#       └─sequence success (0 ticks)
+#             ├─task success (0 ticks)
+#             ├─condition success (0 ticks)
+#             │     └─task success (0 ticks)
+#             └─task success (0 ticks)
 ```
 
-**Example #2: Chain a tree by adding it to a node's children**
-
-Chain the `another_tree` created in the previous example to the children array of a `sequence` node.
+Finally, let's tick the tree to put it into motion.
 
 ```ruby
-sequence = BehaviorTree::Sequence.new
-sequence << another_tree
+# We need to assign the initial context data first.
+another_tree.context = { some_value: 5 }
+
+200.times { another_tree.tick! }
+
+another_tree.print
+# Output:
+# ∅
+# └─sequence failure (200 ticks)
+#       ├─task success (200 ticks)
+#       ├─task success (200 ticks)
+#       └─sequence success (200 ticks)
+#             ├─task success (200 ticks)
+#             ├─condition failure (200 ticks)
+#             │     └─task success (195 ticks)
+#             └─task success (195 ticks)
 ```
 
-When chaining trees, the root node of the tree to be chained will be removed, and its single child will be chained instead. This is because the root node of a tree doesn't add any value to the tree, other than wrapping its single child.
+Now let's have a more in-depth look at how this works.
 
 ## Basics
 
@@ -115,7 +143,7 @@ What is a behavior tree? According to the [Wikipedia](https://en.wikipedia.org/w
 
 > A behavior tree is a mathematical model of plan execution used in computer science, robotics, control systems and video games. They describe switchings between a finite set of tasks in a modular fashion. Their strength comes from their ability to create very complex tasks composed of simple tasks, without worrying how the simple tasks are implemented.
 
-In simple words, it's a modular way to describe your control-flow, in a very flexible and scalable way. It avoids the common pitfalls of usual control-flow (i.e. `if-else`), such as spaghetti code, by structuring the logic as a tree, with branches (conditionals, sequence of tasks, etc) and leaf nodes (tasks to be executed).
+In simple words, it's a modular way to describe your program's control-flow, in a very flexible and scalable way. It avoids the common pitfalls of usual control-flow (i.e. `if-else`), such as spaghetti code, by structuring the logic as a tree, with branches (conditionals, sequence of tasks, etc) and leaf nodes (tasks to be executed).
 
 ### Ticking the tree
 
@@ -139,7 +167,7 @@ Each type of node has different logic for returning these three values.
 
 #### Global context
 
-Just like you would be able to access local variables inside an `if-else` block, a behavior tree has a data structure called `context` which it can operate on. If this didn't exist, there would be no data to manipulate, and take decisions on. In other implementations, it's called *blackboard*, a concept which refers to a global memory.
+Just like you would have access to local variables inside an `if-else` block, a behavior tree has a data structure called `context` which it can operate on. If this didn't exist, there would be no data to manipulate, and take decisions on. In other implementations, it's called *blackboard*, a concept which refers to a global memory.
 
 You can use any Ruby object as context, but the easiest way to get started is to pass a `Hash` object.
 
@@ -159,9 +187,9 @@ Arbitrary data can also be stored on a per node basis.
 node_instance[:arbitrary_variable] = :hello_world
 ```
 
-The preferred way to store node-scoped data is to use vanilla Ruby `@instance_variables`, but this is only possible if you are creating a custom class.
+The preferred way to store node-scoped data is to use vanilla Ruby `@instance_variables`, but this is only possible if you are creating a custom class, and if the node manipulates its own data. Instead, a parent node may use this mechanism to manipulate its children data when necessary.
 
-Note: `node_instance` is **not** a `Hash` object, but instead a Node object. This is implemented by overloading the `[]=` and `[]` operators.
+Note: `node_instance` is **not** a `Hash` object, but instead a Node object. This is a `[]` and `[]=` operator overload.
 
 ### Types of nodes
 
@@ -203,12 +231,12 @@ A control node cannot be a leaf (i.e. it must have children).
 
 There are two types of control nodes, and custom ones can be easily created (see examples in the section about custom control nodes).
 
-1. **Sequence:** `BehaviorTree::Sequence`
+1. **Sequence:**
   a. Begins executing the first child node.
   b. If the child returns `running`, the sequence also returns `running`.
   c. If child returns `failure`, all children are halted, and the sequence returns `failure`.
   d. If the child returns `success`, it continues with the next child node executing the same logic.
-2. **Selector:** `BehaviorTree::Selector`
+2. **Selector:**
   a. Begins executing the first child node.
   b. If the child returns `running`, the sequence also returns `running`.
   c. If child returns `success`, halt all children and return `success`.
@@ -219,6 +247,34 @@ When a control node is ticked, by default it traverses children and ticks them u
 
 1. If at least one node is `running`, then begin from that one, in order.
 2. If no node is `running`, then traverse all nodes starting from the first one, in order.
+
+**Example #1: Creating a sequence and a selector**
+
+```ruby
+sequence = BehaviorTree::Sequence.new
+selector = BehaviorTree::Selector.new
+
+3.times { sequence << BehaviorTree::Task.new }
+2.times { selector << BehaviorTree::Task.new }
+
+# Make the selector a child of the sequence
+sequence << selector
+
+my_tree = BehaviorTree::Builder.build do
+  chain sequence
+end
+
+my_tree.print
+# Output:
+# ∅
+# └─sequence success (0 ticks)
+#       ├─task success (0 ticks)
+#       ├─task success (0 ticks)
+#       ├─task success (0 ticks)
+#       └─selector success (0 ticks)
+#             ├─task success (0 ticks)
+#             └─task success (0 ticks)
+```
 
 Note: When a node gets "halted", it simply means it's resetted, and its status set to `success`. Some nodes have additional logic. Please refer to `halt!` section.
 
@@ -237,11 +293,24 @@ By default the decorator nodes present in this library are:
 | Repeater | `BehaviorTree::Decorators::Repeater` | `repeater` or  `rep` | Ticks the child again N times while it's returning `success`. |
 | Retry | `BehaviorTree::Decorators::Retry` | `re_try` | Ticks the child again N times while it's returning `failure`. |
 
+**Example #1: Creating a tree with many decorators**
+
+```ruby
+my_tree = BehaviorTree::Builder.build do
+  inv {
+    sel {
+      task -> { puts 'Task 1' }
+      force_failure { task -> { puts 'Task 2' } }
+      task -> { puts 'Task 3' }
+    }
+  }
+  task
+end
+```
+
 ## Create custom nodes
 
 ### Custom task
-
-TODO: This section explains all types of task creation, not just custom. Refactor so that it's a general explanation on how to use tasks?
 
 **Example #1 Empty task (i.e. does nothing)**
 
@@ -249,17 +318,7 @@ TODO: This section explains all types of task creation, not just custom. Refacto
 task = BehaviorTree::TaskBase.new
 ```
 
-**Example #2 Task with inline procedure**
-
-```ruby
-task = BehaviorTree::TaskBase.new -> { puts 'Hello world' }
-
-task.tick!
-# Output:
-# Hello world
-```
-
-**Example #3 Task that returns status based on the context**
+**Example #2 Task that returns status based on the context**
 
 ```ruby
 task = BehaviorTree::TaskBase.new do
@@ -284,11 +343,9 @@ task.tick!; task.status #=> running
 task.tick!; task.status #=> success
 task.tick!; task.status #=> success
 ```
-TODO: Remove Node API from here, maybe
-    its more like a general explanation of nodes
-    not about creating nodes specifically
-**Example #4: Same as #3, but using lambdas instead**
-TODO: Actually just keep this one and remove the previous one using lambda.
+
+**Example #3: Same as #2, but using lambdas instead**
+
 When using lambdas instead of normal `Proc` (or blocks), you must pass the `context` and `node` arguments if you want to access their data. Both parameters are optional.
 
 ```ruby
@@ -660,7 +717,7 @@ my_tree.print
 
 The above code generates the following output:
 
-<p align="center">
+<p align="center" style="width: 70%;">
   <img src="https://github.com/FeloVilches/ruby-behavior-tree/blob/main/assets/printed_tree.jpg?raw=true" />
 </p>
 
