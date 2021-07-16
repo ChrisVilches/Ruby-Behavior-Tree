@@ -774,8 +774,8 @@ my_tree.print
 
 The above code generates the following output:
 
-<p align="center" style="width: 70%;">
-  <img src="https://github.com/FeloVilches/ruby-behavior-tree/blob/main/assets/printed_tree.jpg?raw=true" />
+<p align="center">
+  <img src="https://github.com/FeloVilches/ruby-behavior-tree/blob/main/assets/printed_tree.jpg?raw=true" style="width: 70%;"/>
 </p>
 
 In the example above, you can see that the bottom nodes haven't been ticked at all. Node starvation might occur for various reasons, such as having a `force_failure` node as one of the children of a `sequence` (the nodes after the `force_failure` would all be prevented from executing).
