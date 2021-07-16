@@ -203,12 +203,12 @@ A control node cannot be a leaf (i.e. it must have children).
 
 There are two types of control nodes, and custom ones can be easily created (see examples in the section about custom control nodes).
 
-1. **Sequence:**
+1. **Sequence:** `BehaviorTree::Sequence`
   a. Begins executing the first child node.
   b. If the child returns `running`, the sequence also returns `running`.
   c. If child returns `failure`, all children are halted, and the sequence returns `failure`.
   d. If the child returns `success`, it continues with the next child node executing the same logic.
-2. **Selector:**
+2. **Selector:** `BehaviorTree::Selector`
   a. Begins executing the first child node.
   b. If the child returns `running`, the sequence also returns `running`.
   c. If child returns `success`, halt all children and return `success`.
@@ -288,7 +288,7 @@ TODO: Remove Node API from here, maybe
     its more like a general explanation of nodes
     not about creating nodes specifically
 **Example #4: Same as #3, but using lambdas instead**
-
+TODO: Actually just keep this one and remove the previous one using lambda.
 When using lambdas instead of normal `Proc` (or blocks), you must pass the `context` and `node` arguments if you want to access their data. Both parameters are optional.
 
 ```ruby

@@ -5,6 +5,7 @@ module CustomNodes
     private
 
     def should_tick?
+      puts "fucking executing"
       0
     end
   end
