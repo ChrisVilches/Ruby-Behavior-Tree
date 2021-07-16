@@ -20,7 +20,7 @@ describe BehaviorTree::Builder do
       let(:recursion_amount) { 10 }
 
       it { is_expected.to be_instance_of(BehaviorTree::Tree) }
-      it { expect(subject.size > 50).to be true } # I can't predict the exact number.
+      it { expect(subject.size).to be > 30 } # I can't predict the exact number.
     end
 
     context '200 random trees are created' do
