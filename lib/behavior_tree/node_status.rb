@@ -20,7 +20,7 @@ module BehaviorTree
       @value = value
 
       # NOTE: Make sure to notify after having set the @value above, so that the new status is already set.
-      @subscriber&.(prev, value)
+      @subscriber&.(prev)
     end
 
     def subscribe(&subscriber)

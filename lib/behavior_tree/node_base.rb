@@ -4,15 +4,17 @@ module BehaviorTree
   # A node (abstract class).
   class NodeBase
     include TreeStructure::Algorithms
-    attr_reader :status, :tick_count, :ticks_running, :arbitrary_storage
+    attr_reader :status, :prev_status, :tick_count, :ticks_running, :arbitrary_storage
 
     def initialize
       @status = NodeStatus.new NodeStatus::SUCCESS
+      @prev_status = NodeStatus.new NodeStatus::SUCCESS
+
       @tick_count = 0
       @ticks_running = 0
       @context = nil
 
-      @status.subscribe { |prev, curr| __on_status_change__(prev, curr) }
+      @status.subscribe { |prev| __on_status_change__(prev) }
 
       @arbitrary_storage = {}
     end
@@ -102,24 +104,26 @@ module BehaviorTree
 
     def on_finished_running; end
 
-    def on_status_change(_prev); end
+    def on_status_change; end
 
     private
 
-    # Always prev != curr (states that are set to the same aren't notified).
+    # Always prev != current (states that are set to the same aren't notified).
     # The fact that it's set to 0 means that setting to running must be done before
     # increasing the counts (so that @ticks_running becomes 1 after the whole tick lifecycle).
     # This is the non custom on_status_change. Users are expected to override the one without
     # double underscore if they want to execute custom logic.
-    def __on_status_change__(prev, curr)
-      if prev == NodeStatus::RUNNING
+    def __on_status_change__(prev)
+      prev_status.set(prev)
+
+      if prev_status.running?
         on_finished_running
-      elsif curr == NodeStatus::RUNNING
+      elsif status.running?
         @ticks_running = 0
         on_started_running
       end
 
-      on_status_change(prev)
+      on_status_change
     end
   end
 

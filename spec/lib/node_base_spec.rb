@@ -47,6 +47,19 @@ describe BehaviorTree.const_get(:NodeBase) do
   describe '.on_status_change' do
     subject { BehaviorTree::Nop.new(2) }
 
+    context 'when status is changed manually' do
+      it 'changes prev status' do
+        subject.status.running!
+        subject.status.failure!
+        is_expected.to be_failure
+        expect(subject.prev_status.running?).to be true
+
+        subject.status.success!
+        is_expected.to be_success
+        expect(subject.prev_status.failure?).to be true
+      end
+    end
+
     context 'ticked 0 times' do
       it { is_expected.to have_been_running_for_ticks 0 }
       it { is_expected.to be_success }

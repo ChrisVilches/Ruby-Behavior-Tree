@@ -223,7 +223,7 @@ node_instance[:arbitrary_variable] = :hello_world
 
 The preferred way to store node-scoped data is to use vanilla Ruby `@instance_variables`, but this is only possible if you are creating a custom class, and if the node manipulates its own data. Instead, a parent node may use this mechanism to manipulate its children data when necessary.
 
-Note: `node_instance` is **not** a `Hash` object, but instead a Node object. This is a `[]` and `[]=` operator overload.
+**Note:** `node_instance` is **not** a `Hash` object, but instead a Node object. This is a `[]` and `[]=` operator overload.
 
 ### Types of nodes
 
@@ -277,7 +277,7 @@ There are two types of control nodes, and custom ones can be easily created ([se
   d. If child returns `failure`, then continue with the next child.
   e. If no node ever returned `success`, then return `failure`.
 
-Note: [Learn about "halting nodes" and what it means.](#halt-)
+[Learn about "halting nodes" and what it means.](#halt-)
 
 When a control node is ticked, by default it traverses children and ticks them using this logic:
 
@@ -527,7 +527,7 @@ Note that under the hood, `tick_each_children` uses the strategy defined (i.e. `
 
 ### Custom decorator
 
-*Note: Condition nodes are also a type of decorator, but they are covered separately here: [Custom condition nodes](#custom-condition)*
+**Note:** Condition nodes are also a type of decorator, but they are covered separately here: [Custom condition nodes](#custom-condition).
 
 Here's an example of how to create a custom decorator. Simply inherit from `BehaviorTree::Decorators::DecoratorBase` and override any or both of these two methods, `decorate` and `status_map`.
 
@@ -583,7 +583,7 @@ my_tree.print
 #       └─task success (0 ticks)
 ```
 
-Note: Other behavior tree implementations prefer the use of `sequence` control nodes, and placing conditional nodes as a leaves, but with the role of simply returning `failure` or `success`. Since sequences execute the next node only if the previous one succeeded, this also works as a conditional node. In this implementation, however, both patterns are available and you are free to choose which one to use.
+**Note:** Other behavior tree implementations prefer the use of `sequence` control nodes, and placing conditional nodes as a leaves, but with the role of simply returning `failure` or `success`. Since sequences execute the next node only if the previous one succeeded, this also works as a conditional node. In this implementation, however, both patterns are available and you are free to choose which one to use.
 
 ## Node API
 
@@ -609,6 +609,22 @@ node.status.success? # => boolean
 node.status.failure? # => boolean
 ```
 
+**Accessing previous status**
+
+The previous status is also stored inside a node. It can be used in `on_status_change` to trigger a certain action in function of the current and previous state (See: [Status related callbacks and hooks](#status-related-callbacks-and-hooks)).
+
+```ruby
+node.status.success!
+
+node.status.running!
+
+node.status.to_sym # => :running
+
+node.prev_status.to_sym # => :success
+```
+
+**Warning:** Don't modify the `prev_status` manually. It's updated automatically.
+
 ### tick!
 
 As you have seen in other examples, all nodes have a `tick!` method, which as the name says, ticks the node, and propagates it down to its children (if any).
@@ -623,7 +639,7 @@ This method is usually used when you want to reset the node and its children's s
 
 ### Status related callbacks and hooks
 
-**on_status_change(prev)**
+**on_status_change**
 
 This method is executed everytime the node status changes. It's only triggered when there's a change (i.e. previous value and next value are different).
 
@@ -646,9 +662,8 @@ class RandomStatusTask < BehaviorTree::Task
     status.send("#{possible_status.sample}!")
   end
 
-  def on_status_change(prev)
-    # Only the previous status is passed as argument.
-    # The current status can be obtained this way.
+  def on_status_change
+    prev = prev_status
     curr = status
 
     puts "My status went from #{prev.to_sym} to #{curr.to_sym} (tick_count = #{tick_count})"
@@ -660,21 +675,21 @@ task = RandomStatusTask.new
 5.times { task.tick! }
 
 # Output:
-# My status went from __success__ to running (tick_count = 1)
+# My status went from success to running (tick_count = 1)
 # Being ticked...
-# My status went from __running__ to failure (tick_count = 1)
-# My status went from __failure__ to running (tick_count = 2)
+# My status went from running to failure (tick_count = 1)
+# My status went from failure to running (tick_count = 2)
 # Being ticked...
-# My status went from __running__ to failure (tick_count = 2)
-# My status went from __failure__ to running (tick_count = 3)
+# My status went from running to failure (tick_count = 2)
+# My status went from failure to running (tick_count = 3)
 # Being ticked...
-# My status went from __running__ to success (tick_count = 3)
-# My status went from __success__ to running (tick_count = 4)
+# My status went from running to success (tick_count = 3)
+# My status went from success to running (tick_count = 4)
 # Being ticked...
-# My status went from __running__ to success (tick_count = 4)
-# My status went from __success__ to running (tick_count = 5)
+# My status went from running to success (tick_count = 4)
+# My status went from success to running (tick_count = 5)
 # Being ticked...
-# My status went from __running__ to failure (tick_count = 5)
+# My status went from running to failure (tick_count = 5)
 ```
 
 In the output of the example above, one thing to note is that the first line (change from `success` to `running`) happens because `tick!` **immediately and always** sets the node to `running`. This happens even before the task logic (`on_tick` method) has been executed.
@@ -760,7 +775,7 @@ my_tree.repeated_nodes
 # => <Set: { ... repeated nodes ... }>
 ```
 
-Note: Object equality is tested using `Set#include?`.
+**Note:** Object equality is tested using `Set#include?`.
 
 ### Visualize a tree
 
