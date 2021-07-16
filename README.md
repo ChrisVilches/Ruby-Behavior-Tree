@@ -96,7 +96,7 @@ another_tree.print
 #       └─task success (0 ticks)
 ```
 
-You can join trees that were created with any of the above methods (DSL or plain old Ruby objects). Let's join both of the trees we just created:
+You can join trees created with any of the above methods (DSL or plain old Ruby objects). Let's join both of the trees we just created:
 
 ```ruby
 sequence << my_tree
@@ -201,7 +201,7 @@ Each type of node has different logic for returning these three values.
 
 #### Global context
 
-Just like you would have access to local variables inside an `if-else` block, a behavior tree has a data structure called `context` which it can operate on. If this didn't exist, there would be no data to manipulate, and take decisions on. In other implementations, it's called *blackboard*, a concept which refers to a global memory.
+Just like you would have access to local variables inside an `if-else` block, a behavior tree has a data structure called `context` which it can operate on. If this didn't exist, there would be no data to work with, and/or use to take decisions. In other implementations, it's called *blackboard*, a concept which refers to a global memory.
 
 You can use any Ruby object as context, but the easiest way to get started is to pass a `Hash` object.
 
@@ -314,7 +314,7 @@ Note: When a node gets "halted", it simply means it's resetted, and its status s
 
 #### Decorators and condition nodes
 
-A decorator can have only one child, and adds additional functionalities.
+A decorator can have only one child, and acts as a modifier for its child.
 
 By default the decorator nodes present in this library are:
 
@@ -780,7 +780,7 @@ The above code generates the following output:
   <img src="https://github.com/FeloVilches/ruby-behavior-tree/blob/main/assets/printed_tree.jpg?raw=true" />
 </p>
 
-In the example above, you can see that the bottom nodes haven't been ticked at all. Node starvation might occur for various reasons, such as having a `force_failure` node as one of the children of a `sequence` (the nodes following the `force_failure` would all be prevented from executing).
+In the example above, you can see that the bottom nodes haven't been ticked at all. Node starvation might occur for various reasons, such as having a `force_failure` node as one of the children of a `sequence` (the nodes after the `force_failure` would all be prevented from executing).
 
 Printing can also be useful in detecting bugs in your custom nodes.
 
@@ -788,7 +788,7 @@ Printing can also be useful in detecting bugs in your custom nodes.
 
 ### Generate random trees
 
-Mostly created for the purpose of debugging and testing various trees in development mode, you can generate random trees by executing the following code:
+Mostly created for debugging and testing various trees in development mode, you can generate random trees by executing the following code:
 
 ```ruby
 random_tree = BehaviorTree::Builder.build_random_tree
