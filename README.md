@@ -135,7 +135,41 @@ another_tree.print
 #             └─task success (195 ticks)
 ```
 
-Now let's have a more in-depth look at how this works.
+## Table of contents
+
+- [Quick start](#quick-start)
+  * [Build your first tree](#build-your-first-tree)
+- [Table of contents](#table-of-contents)
+- [Basics](#basics)
+  * [Ticking the tree](#ticking-the-tree)
+  * [Node status](#node-status)
+  * [Storage](#storage)
+    + [Global context](#global-context)
+    + [Per-node storage](#per-node-storage)
+  * [Types of nodes](#types-of-nodes)
+    + [Task nodes](#task-nodes)
+    + [Control nodes](#control-nodes)
+    + [Decorators and condition nodes](#decorators-and-condition-nodes)
+- [Create custom nodes](#create-custom-nodes)
+  * [Custom task](#custom-task)
+  * [Custom control node](#custom-control-node)
+  * [Custom decorator](#custom-decorator)
+  * [Custom condition](#custom-condition)
+- [Node API](#node-api)
+  * [Status](#status)
+  * [tick!](#tick-)
+  * [halt!](#halt-)
+  * [Status related callbacks and hooks](#status-related-callbacks-and-hooks)
+- [Add custom nodes to the DSL](#add-custom-nodes-to-the-dsl)
+- [Troubleshoot and debug your trees](#troubleshoot-and-debug-your-trees)
+  * [Detecting cycles](#detecting-cycles)
+  * [Checking nodes are all unique objects](#checking-nodes-are-all-unique-objects)
+  * [Visualize a tree](#visualize-a-tree)
+- [Miscellaneous](#miscellaneous)
+  * [Generate random trees](#generate-random-trees)
+- [Contributing](#contributing)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
 
 ## Basics
 
@@ -278,7 +312,7 @@ my_tree.print
 
 Note: When a node gets "halted", it simply means it's resetted, and its status set to `success`. Some nodes have additional logic. Please refer to `halt!` section.
 
-#### Decorators
+#### Decorators and condition nodes
 
 A decorator can have only one child, and adds additional functionalities.
 
@@ -587,11 +621,11 @@ The tick cycle has several parts, and some of them can be customized separately.
 
 This simply sets the node to `success`, and when a node has children, it executes `halt!` on all children as well, which propagates the `halt!` action down the tree.
 
-This method is usually used when you want to reset its and its children's status. In control nodes, since they follow the strategy of *"resume from the running nodes, if there is any"* is used, it's imperative to execute `halt!` once the sequence/selector has finished, so it can start again from the first node. Other than that, you may decide not to halt them if it's not necessary.
+This method is usually used when you want to reset the node and its children's status. In control nodes, since they follow the strategy of *"resume from the running nodes, if there is any"* is used by default, it's imperative to execute `halt!` once the sequence/selector has finished, so it can start again from the first node (unless you override this logic in a custom control node). Other than that, you may decide not to halt them if it's not necessary.
 
 ### Status related callbacks and hooks
 
-#### on_status_change(prev)
+**on_status_change(prev)**
 
 This method is executed everytime the node status changes. It's only triggered when there's a change (i.e. previous value and next value are different).
 
@@ -649,15 +683,15 @@ In the output of the example above, one thing to note is that the first line (ch
 
 The second line of the output is the `puts` of the actual task logic. The third line happens as a result of the task logic changing the status, therefore triggering a `on_status_change` call.
 
-#### on_started_running
+**on_started_running**
 
 Similar to `on_status_change`, but only triggers when the node has been set to `running`.
 
-#### on_finished_running
+**on_finished_running**
 
 Similar to `on_status_change`, but only triggers when the node has been set to a status other than `running`.
 
-### Add custom nodes to the DSL
+## Add custom nodes to the DSL
 
 You can register new nodes to be used in the DSL, take for example the following code:
 
@@ -697,13 +731,11 @@ BehaviorTree::Builder.register_alias(:my_control_node, :my_ctrl_node)
 
 This way, both `my_control_node` and `my_ctrl_node` can be used in the DSL.
 
-## Validate your tree
+## Troubleshoot and debug your trees
 
 Sometimes you may run into issues with your tree, and it's generally difficult to debug a recursive structure, but here are a few ways to make it a bit easier to debug and troubleshoot.
 
-### Check correct tree structure
-
-#### Detecting cycles
+### Detecting cycles
 
 You can check if your tree has cycles by executing the following:
 
@@ -712,7 +744,7 @@ my_tree.cycle?
 # => false
 ```
 
-#### Checking nodes are all unique objects
+### Checking nodes are all unique objects
 
 Sometimes you might accidentally chain the same node to a parent node. When this happens, the node will have multiple parents. Since this might be a desired situation in some cases, nodes are not cloned automatically by default.
 
