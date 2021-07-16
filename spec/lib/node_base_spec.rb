@@ -5,7 +5,6 @@ module CustomNodes
     private
 
     def should_tick?
-      puts "fucking executing"
       0
     end
   end
@@ -77,6 +76,9 @@ describe BehaviorTree.const_get(:NodeBase) do
 
   context 'when should_tick? implementation is wrong' do
     let(:custom_node) { CustomNodes::WrongShouldTick.new }
-    it { expect { custom_node.tick! }.to raise_error(BehaviorTree::ShouldTickNotBooleanError) }
+    it do
+      expect { custom_node.tick! }
+        .to raise_error(BehaviorTree::ShouldTickNotBooleanError).with_message(/0 \(Integer\)/)
+    end
   end
 end

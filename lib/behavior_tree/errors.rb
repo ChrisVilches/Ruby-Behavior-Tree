@@ -66,7 +66,8 @@ module BehaviorTree
   # Exception for when the returned value in should_tick? is not a boolean.
   class ShouldTickNotBooleanError < StandardError
     def initialize(returned_value)
-      super "Method 'should_tick?' must return a boolean value. It returned #{returned_value} (#{returned_value.class})."
+      err = "Return of 'should_tick?' must be a boolean value. It returned #{returned_value} (#{returned_value.class})."
+      super err
     end
   end
 end

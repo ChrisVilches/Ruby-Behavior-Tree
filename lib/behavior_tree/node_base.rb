@@ -32,11 +32,10 @@ module BehaviorTree
 
     def tick!
       @tick_count += 1
-      @tick_prevented = !should_tick?
+      should_tick = should_tick?
+      raise ShouldTickNotBooleanError, should_tick unless [true, false].include? should_tick
 
-      raise ShouldTickNotBooleanError, @tick_prevented unless [true, false].include? @tick_prevented
-
-      unless @tick_prevented
+      unless (@tick_prevented = !should_tick)
         status.running!
         on_tick
         @ticks_running += 1
