@@ -63,7 +63,7 @@ my_tree.print
 
 Later in the guide you'll learn how to add your own custom classes so they are available inside the DSL as well.
 
-If the tree or part of it cannot be built using the DSL, you can build it programmatically like so:
+If the tree or part of it cannot be built using the DSL, you can build it using plain old Ruby objects like so:
 
 ```ruby
 # Initialize an empty sequence.
@@ -96,7 +96,7 @@ another_tree.print
 #       └─task success (0 ticks)
 ```
 
-You can join trees that were created with any of the above methods (DSL or simple Ruby object programming). Let's join both of the trees we just created:
+You can join trees that were created with any of the above methods (DSL or plain old Ruby objects). Let's join both of the trees we just created:
 
 ```ruby
 sequence << my_tree
@@ -143,7 +143,7 @@ What is a behavior tree? According to the [Wikipedia](https://en.wikipedia.org/w
 
 > A behavior tree is a mathematical model of plan execution used in computer science, robotics, control systems and video games. They describe switchings between a finite set of tasks in a modular fashion. Their strength comes from their ability to create very complex tasks composed of simple tasks, without worrying how the simple tasks are implemented.
 
-In simple words, it's a modular way to describe your program's control-flow, in a very flexible and scalable way. It avoids the common pitfalls of usual control-flow (i.e. `if-else`), such as spaghetti code, by structuring the logic as a tree, with branches (conditionals, sequence of tasks, etc) and leaf nodes (tasks to be executed).
+In simple words, it's a modular way to describe your program's control flow, in a very flexible and scalable way. It avoids the common pitfalls of usual control flow (i.e. `if-else`), such as spaghetti code, by structuring the logic as a tree, with branches (conditionals, sequence of tasks, etc) and leaf nodes (tasks to be executed).
 
 ### Ticking the tree
 
@@ -312,6 +312,13 @@ end
 
 ### Custom task
 
+There are two main ways to create tasks.
+
+1. By instantiating `BehaviorTree::TaskBase` (or its alias `BehaviorTree::Task`) and passing a lambda or block.
+2. By subclassing `BehaviorTree::TaskBase` and overriding the `on_tick` method with the desired procedure to execute.
+
+Let's see examples of both.
+
 **Example #1 Empty task (i.e. does nothing)**
 
 ```ruby
@@ -363,6 +370,36 @@ task = BehaviorTree::TaskBase.new -> (context, node) {
 }
 ```
 
+**Example #4: Create a custom task class**
+
+In this task not only we override the `on_tick` method, but also the constructor, and now this task needs a parameter to be instantiated.
+
+```ruby
+class CustomTaskWithConstructorArgument < BehaviorTree::Task
+  def initialize(inc)
+    super()
+    @inc = inc
+  end
+
+  def on_tick
+    context[:a] += @inc
+    context[:a].even? ? status.success! : status.running!
+  end
+end
+
+task = CustomTaskWithConstructorArgument.new(3)
+
+initial_context = { a: 3 }
+
+task.context = initial_context
+
+task.tick!
+
+task.status.to_sym # => :success
+
+initial_context # => {:a=>6}
+```
+
 ### Custom control node
 
 Control nodes use a concept called `traversal strategy`, which refers to the way the nodes are iterated.
@@ -401,9 +438,11 @@ class Shuffle < BehaviorTree::Sequence
 end
 ```
 
-**Example #2: Overriding the control-flow logic**
+**Example #2: Overriding the control flow logic**
 
-The example above defines a new traversal strategy, but keeps the same logic as a vanilla `Sequence`. In the following example, we continue to use the strategy defined above, but create a different control-flow logic.
+The example above defines a new traversal strategy, but keeps the same logic as a vanilla `Sequence`. In the following example, we continue to use the strategy defined above, but create a different control flow logic.
+
+Control nodes execute their control flow logic in the `on_tick` method, so this is the method that must be overriden.
 
 ```ruby
 # Return success if all either succeeded or failed. Otherwise return failure.
@@ -450,13 +489,13 @@ class AllOrNothing < ControlNodeBase
 end
 ```
 
-Note that under the hood, `tick_each_children` uses the strategy defined, and also ticks the child. You don't need to send `tick!` manually to the child.
+Note that under the hood, `tick_each_children` uses the strategy defined (i.e. `shuffle` method), and traverses its children while also ticking them. You don't need to send `tick!` manually to the child. The code defined in `on_tick` is executed *right after* the child is ticked.
 
 ### Custom decorator
 
 *Note: Condition nodes are a type of decorator, but they are covered separately in the next section.*
 
-Here's an example of how to create a custom decorator. Simply inherit from `BehaviorTree::Decorators::DecoratorBase` and override the two methods present.
+Here's an example of how to create a custom decorator. Simply inherit from `BehaviorTree::Decorators::DecoratorBase` and override any or both of these two methods, `decorate` and `status_map`.
 
 ```ruby
 class CustomDecorator < BehaviorTree::Decorators::DecoratorBase
@@ -477,7 +516,7 @@ end
 
 ### Custom condition
 
-Creating a condition as a class.
+Creating a condition as a class. The `should_tick?` method must be overriden, and it must return a `boolean` value.
 
 ```ruby
 class CustomCondition < BehaviorTree::Decorators::Condition
@@ -504,6 +543,7 @@ my_tree.tick!
 
 # Inspect the tree. Condition failed, and task node hasn't been touched.
 my_tree.print
+# Output:
 # ∅
 # └─condition failure (1 ticks)
 #       └─task success (0 ticks)
@@ -515,7 +555,7 @@ Note: Other behavior tree implementations prefer the use of `sequence` control n
 
 ### Status
 
-Every instance of node classes (i.e. descendants of `NodeBase` class) have a status object, where you can execute the following methods.
+Every instance of node classes have a status object, where you can execute the following methods.
 
 **Setters**
 
@@ -537,13 +577,19 @@ node.status.failure? # => boolean
 
 ### tick!
 
-As you have seen in other examples, all nodes have a `tick!` method, which as the name says, ticks the node.
+As you have seen in other examples, all nodes have a `tick!` method, which as the name says, ticks the node, and propagates it down to its children (if any).
 
 The first thing it does is always setting the node to `running`.
 
-The tick cycle has several parts, and some of them can be customized separately. Check the section about callbacks and hooks for more information.
+The tick cycle has several parts, and some of them can be customized separately. Read the next section for information about this topic.
 
-### Callbacks and hooks
+### halt!
+
+This simply sets the node to `success`, and when a node has children, it executes `halt!` on all children as well, which propagates the `halt!` action down the tree.
+
+This method is usually used when you want to reset its and its children's status. In control nodes, since they follow the strategy of *"resume from the running nodes, if there is any"* is used, it's imperative to execute `halt!` once the sequence/selector has finished, so it can start again from the first node. Other than that, you may decide not to halt them if it's not necessary.
+
+### Status related callbacks and hooks
 
 #### on_status_change(prev)
 
@@ -610,25 +656,6 @@ Similar to `on_status_change`, but only triggers when the node has been set to `
 #### on_finished_running
 
 Similar to `on_status_change`, but only triggers when the node has been set to a status other than `running`.
-
-#### on_tick
-
-This is where custom logic for when the node is being ticked can be implemented.
-
-What you should implement differs depending on the node type.
-
-1. **For condition nodes:** don't override this method. Override `should_tick?` instead.
-2. **For control nodes:** Override the control-flow logic. In other words, you can create a control node that's not a `sequence` nor a `selector`, but something else entirely. See the custom control node example for reference.
-3. **For task nodes:** The task procedure.
-4. **For (non-condition) decorator nodes:** Currently overriding is not considered supported. Override the `decorate` method instead.
-
-#### should_tick?
-
-The default return value for this node is `true` for all nodes, except for condition nodes, where it should be overriden.
-
-This method must return a `boolean` value.
-
-Note: Currently all nodes have this method, however instead of overriding it in task nodes or other types of nodes, prefer creating a condition node and use it to decorate the node you want to conditionally tick.
 
 ### Add custom nodes to the DSL
 
@@ -736,7 +763,7 @@ random_tree = BehaviorTree::Builder.build_random_tree
 
 100.times { random_tree.tick! }
 random_tree.print
-
+# Output:
 # ∅
 # └─selector running (100 ticks)
 #       ├─forcefailure failure (76 ticks)
@@ -745,7 +772,7 @@ random_tree.print
 #       │                 └─task success (114 ticks)
 #       ├─inverter running (47 ticks)
 #
-# etc...
+# (the rest is omitted)
 ```
 
 Or make it smaller/larger by tweaking the optional argument `recursion_amount`:
