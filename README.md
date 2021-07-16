@@ -137,6 +137,9 @@ another_tree.print
 
 ## Learn how to use
 
+- [Quick start](#quick-start)
+  * [Build your first tree](#build-your-first-tree)
+- [Learn how to use](#learn-how-to-use)
 - [Basics](#basics)
   * [Ticking the tree](#ticking-the-tree)
   * [Node status](#node-status)
@@ -241,7 +244,7 @@ class DecreaserTask < BehaviorTree::Task
 end
 ```
 
-See the section about DSL to learn how to register your custom nodes so they can be used more easily.
+Learn [how to register your custom nodes](#add-custom-nodes-to-the-dsl) so they become available in the DSL.
 
 **Example #2: Insert inline logic in the DSL**
 
@@ -260,7 +263,7 @@ A control node decides the flow of the execution. In simpler words, it uses a ce
 
 A control node cannot be a leaf (i.e. it must have children).
 
-There are two types of control nodes, and custom ones can be easily created (see examples in the section about custom control nodes).
+There are two types of control nodes, and custom ones can be easily created ([see examples of custom control nodes](#custom-control-node)).
 
 1. **Sequence:**
   a. Begins executing the first child node.
@@ -273,6 +276,8 @@ There are two types of control nodes, and custom ones can be easily created (see
   c. If child returns `success`, halt all children and return `success`.
   d. If child returns `failure`, then continue with the next child.
   e. If no node ever returned `success`, then return `failure`.
+
+Note: [Learn about "halting nodes" and what it means.](#halt-)
 
 When a control node is ticked, by default it traverses children and ticks them using this logic:
 
@@ -306,8 +311,6 @@ my_tree.print
 #             ├─task success (0 ticks)
 #             └─task success (0 ticks)
 ```
-
-Note: When a node gets "halted", it simply means it's resetted, and its status set to `success`. Some nodes have additional logic. Please refer to `halt!` section.
 
 #### Decorators and condition nodes
 
@@ -524,7 +527,7 @@ Note that under the hood, `tick_each_children` uses the strategy defined (i.e. `
 
 ### Custom decorator
 
-*Note: Condition nodes are a type of decorator, but they are covered separately in the next section.*
+*Note: Condition nodes are also a type of decorator, but they are covered separately here: [Custom condition nodes](#custom-condition)*
 
 Here's an example of how to create a custom decorator. Simply inherit from `BehaviorTree::Decorators::DecoratorBase` and override any or both of these two methods, `decorate` and `status_map`.
 
@@ -610,9 +613,7 @@ node.status.failure? # => boolean
 
 As you have seen in other examples, all nodes have a `tick!` method, which as the name says, ticks the node, and propagates it down to its children (if any).
 
-The first thing it does is always setting the node to `running`.
-
-The tick cycle has several parts, and some of them can be customized separately. Read the next section for information about this topic.
+The first thing it does is always setting the node to `running`. After this, what happens depends on the type of node. You can learn more about each node type and how to override their behavior in: [Create custom nodes](#create-custom-nodes).
 
 ### halt!
 
