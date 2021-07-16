@@ -135,11 +135,8 @@ another_tree.print
 #             └─task success (195 ticks)
 ```
 
-## Table of contents
+## Learn how to use
 
-- [Quick start](#quick-start)
-  * [Build your first tree](#build-your-first-tree)
-- [Table of contents](#table-of-contents)
 - [Basics](#basics)
   * [Ticking the tree](#ticking-the-tree)
   * [Node status](#node-status)
