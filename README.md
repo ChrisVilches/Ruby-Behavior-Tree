@@ -766,7 +766,7 @@ Note: Object equality is tested using `Set#include?`.
 
 Printing the tree is not only useful for verifying it has the desired structure, but also for detecting various issues.
 
-```
+```ruby
 200.times { my_tree.tick! }
 
 my_tree.print
