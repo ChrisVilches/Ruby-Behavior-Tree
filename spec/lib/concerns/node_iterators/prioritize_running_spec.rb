@@ -9,14 +9,14 @@ describe BehaviorTree::NodeIterators::PrioritizeRunning do
 
       before { subject << nops }
 
-      it { expect(subject.prioritize_running).to be_instance_of Enumerator }
-      it { expect(subject.prioritize_running.to_a).to eq nops }
-      it { expect(subject.prioritize_running.count).to eq 2 }
-      it { expect(subject.prioritize_running.map(&:itself)).to eq nops }
+      it { expect(subject.send(:prioritize_running)).to be_instance_of Enumerator }
+      it { expect(subject.send(:prioritize_running).to_a).to eq nops }
+      it { expect(subject.send(:prioritize_running).count).to eq 2 }
+      it { expect(subject.send(:prioritize_running).map(&:itself)).to eq nops }
 
       it 'can chain each' do
         values = []
-        subject.prioritize_running.each { |v| values << v }
+        subject.send(:prioritize_running).each { |v| values << v }
         expect(values).to eq nops
       end
 
@@ -27,8 +27,8 @@ describe BehaviorTree::NodeIterators::PrioritizeRunning do
         end
 
         # Skip first node.
-        it { expect(subject.prioritize_running.count).to eq 1 }
-        it { expect(subject.prioritize_running.first).to eq nops[1] }
+        it { expect(subject.send(:prioritize_running).count).to eq 1 }
+        it { expect(subject.send(:prioritize_running).first).to eq nops[1] }
       end
     end
   end
