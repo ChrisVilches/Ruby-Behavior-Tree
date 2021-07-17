@@ -700,11 +700,15 @@ The second line of the output is the `puts` of the actual task logic. The third 
 
 **on_started_running**
 
-Similar to `on_status_change`, but only triggers when the node has been set to `running`.
+Similar to `on_status_change`, but only triggers when the node has been set to `running` (changed from a status other than `running`.
+
+In some implementations, this is called `initialization`.
 
 **on_finished_running**
 
 Similar to `on_status_change`, but only triggers when the node has been set to a status other than `running`.
+
+In some implementations, this is called `shutdown`.
 
 ## Add custom nodes to the DSL
 
