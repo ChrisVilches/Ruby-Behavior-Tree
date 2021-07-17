@@ -327,7 +327,7 @@ By default the decorator nodes present in this library are:
 | Repeater | `BehaviorTree::Decorators::Repeater` | `repeater` or  `rep` | Ticks the child again N times while it's returning `success`. |
 | Retry | `BehaviorTree::Decorators::Retry` | `re_try` | Ticks the child again N times while it's returning `failure`. |
 
-**Example #1: Creating a tree with many decorators**
+**Example #1: Creating a tree with some decorators**
 
 ```ruby
 my_tree = BehaviorTree::Builder.build do
