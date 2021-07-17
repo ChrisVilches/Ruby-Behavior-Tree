@@ -193,7 +193,7 @@ my_tree.tick!
 
 Each node has a status, which can have three possible values:
 
-1. `success` which is usually returned by a task when it completes successfully, by conditional nodes when the condition they evaluate is true, or when nodes have never been set to run. Since this is the default status of all nodes, a node is in `success` status if it has never been ticked, or if it has been halted (using `halt!`).
+1. `success` which is returned in certain situations depending on the node type, but usually indicating that the operation they are in charge of was completed. Tasks usually return `success` when they execute/complete successfully, sequences return `success` when the entire sequence is executed successfully, and so on. Since this is the default status of all nodes, a node is in `success` status if it has never been ticked, or if it has been halted (using `halt!`).
 2. `running` which is returned by nodes that are currently executing.
 3. `failure` which is returned to signal that execution failed.
 
