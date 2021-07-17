@@ -181,6 +181,8 @@ In simple words, it's a modular way to describe your program's control flow, in 
 
 ### Ticking the tree
 
+The tick is the most important part of using a behavior tree. When you tick the root node of a tree, it will propagate it by ticking its children, which in turn will tick their children. Tasks (leaf nodes) are executed when the tick reaches them. Non-leaf nodes would execute their own logic when they are ticked (e.g. decoration logic, executing a sequence, etc).
+
 ```ruby
 my_tree.tick!
 
