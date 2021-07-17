@@ -265,7 +265,7 @@ A control node decides the flow of the execution. In simpler words, it uses a ce
 
 A control node cannot be a leaf (i.e. it must have children).
 
-By default, there are two types of control nodes, and custom ones can be easily created ([see examples of custom control nodes](#custom-control-node)).
+By default, there are two types of control nodes, and custom ones can be easily created. See: ([Examples of custom control nodes](#custom-control-node)).
 
 1. **Sequence:**
   a. Begins executing the first child node.
