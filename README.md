@@ -261,11 +261,11 @@ end
 
 #### Control nodes
 
-A control node decides the flow of the execution. In simpler words, it uses a certain logic to decide which branch to execute. This is where most of the similarities with a simple `if-else` come from.
+A control node decides the flow of the execution. In simpler words, it uses a certain logic to decide which branch to execute. It could be one branch, multiple branches, or all of them.
 
 A control node cannot be a leaf (i.e. it must have children).
 
-There are two types of control nodes, and custom ones can be easily created ([see examples of custom control nodes](#custom-control-node)).
+By default, there are two types of control nodes, and custom ones can be easily created ([see examples of custom control nodes](#custom-control-node)).
 
 1. **Sequence:**
   a. Begins executing the first child node.
