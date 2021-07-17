@@ -525,7 +525,7 @@ class AllOrNothing < ControlNodeBase
 end
 ```
 
-Note that under the hood, `tick_each_children` uses the strategy defined (i.e. `shuffle` method), and traverses its children while also ticking them. You don't need to send `tick!` manually to the child. The code defined in `on_tick` is executed *right after* the child is ticked.
+Note that under the hood, `tick_each_children` uses the strategy defined (i.e. `shuffle` method), and traverses its children while also ticking them. You don't need to send `tick!` manually to the child. The code in the block given to `tick_each_children` is executed *right after* the child is ticked.
 
 ### Custom decorator
 
@@ -562,7 +562,7 @@ class CustomCondition < BehaviorTree::Decorators::Condition
 end
 ```
 
-Or using inline logic in the DSL. When using the DSL, before starting the block (i.e. where the child is defined), you must pass a `lambda` which receives two parameters (both optional), `context` and `node` (the `self` of the condition node).
+Or create condition nodes using inline lambdas in the DSL. When using the DSL, before starting the block (i.e. where the child is defined), you must pass a `lambda` which receives two parameters (both optional), `context` and `node` (which is the `self` of the condition node).
 
 ```ruby
 my_tree = BehaviorTree::Builder.build do
@@ -585,7 +585,7 @@ my_tree.print
 #       └─task success (0 ticks)
 ```
 
-**Note:** Other behavior tree implementations prefer the use of `sequence` control nodes, and placing conditional nodes as a leaves, but with the role of simply returning `failure` or `success`. Since sequences execute the next node only if the previous one succeeded, this also works as a conditional node. In this implementation, however, both patterns are available and you are free to choose which one to use.
+**Note:** Other behavior tree implementations prefer the use of `sequence` control nodes, and placing conditional nodes as leaves, but with the role of simply returning `failure` or `success`. Since sequences execute the next node only if the previous one succeeded, it would also behave like a conditional node, preventing the next nodes in the sequence from executing if the condition failed. In this implementation, however, both patterns are available and you are free to choose which one to use.
 
 ## Node API
 
