@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    behavior_tree (0.1.10)
+    behavior_tree (1.0.0)
       colorize (~> 0.8.1)
 
 GEM
