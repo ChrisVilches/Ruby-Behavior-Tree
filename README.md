@@ -796,7 +796,7 @@ my_tree.print
 The above code generates the following output:
 
 <p align="center">
-  <img src="https://github.com/FeloVilches/ruby-behavior-tree/blob/main/assets/printed_tree.jpg?raw=true" width="400"/>
+  <img src="https://github.com/ChrisVilches/ruby-behavior-tree/blob/main/assets/printed_tree.jpg?raw=true" width="400"/>
 </p>
 
 In the example above, you can see that the bottom nodes haven't been ticked at all. Node starvation might occur for various reasons, such as having a `force_failure` node as one of the children of a `sequence` (the nodes after the `force_failure` would all be prevented from executing).
@@ -836,7 +836,7 @@ Keep in mind this is only for development purposes, and the generated trees don'
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/FeloVilches/ruby-behavior-tree. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/FeloVilches/ruby-behavior-tree/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/ChrisVilches/ruby-behavior-tree. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/ChrisVilches/ruby-behavior-tree/blob/main/CODE_OF_CONDUCT.md).
 
 
 ## License
@@ -845,4 +845,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Behavior Tree project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/FeloVilches/ruby-behavior-tree/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the Behavior Tree project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/ChrisVilches/ruby-behavior-tree/blob/main/CODE_OF_CONDUCT.md).
