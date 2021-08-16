@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2021 Felo Vilches
+Copyright (c) 2021 Chris Vilches
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
