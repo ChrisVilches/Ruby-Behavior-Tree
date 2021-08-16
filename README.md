@@ -5,7 +5,7 @@
 A robust and customizable Ruby gem for creating Behavior Trees, used in games, AI, robotics, and more.
 
 <p align="center">
-  <img src="https://github.com/FeloVilches/ruby-behavior-tree/blob/main/assets/logo.png?raw=true" />
+  <img src="https://github.com/ChrisVilches/ruby-behavior-tree/blob/main/assets/logo.png?raw=true" />
 </p>
 
 ## Quick start
