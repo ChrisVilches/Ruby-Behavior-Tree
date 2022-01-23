@@ -157,8 +157,8 @@ another_tree.print
   * [Custom condition](#custom-condition)
 - [Node API](#node-api)
   * [Status](#status)
-  * [tick!](#tick-)
-  * [halt!](#halt-)
+  * [tick!](#tick)
+  * [halt!](#halt)
   * [Status related callbacks and hooks](#status-related-callbacks-and-hooks)
 - [Add custom nodes to the DSL](#add-custom-nodes-to-the-dsl)
 - [Troubleshoot and debug your trees](#troubleshoot-and-debug-your-trees)
@@ -279,7 +279,7 @@ By default, there are two types of control nodes, and custom ones can be easily 
   d. If child returns `failure`, then continue with the next child.
   e. If no node ever returned `success`, then return `failure`.
 
-[Learn about "halting nodes" and what it means.](#halt-)
+[Learn about "halting nodes" and what it means.](#halt)
 
 When a control node is ticked, by default it traverses children and ticks them using this logic:
 
