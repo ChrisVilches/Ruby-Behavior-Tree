@@ -8,6 +8,10 @@ A robust and customizable Ruby gem for creating Behavior Trees, used in games, A
   <img src="https://github.com/ChrisVilches/ruby-behavior-tree/blob/main/assets/logo.png?raw=true" />
 </p>
 
+<p align="center">
+  <img src="https://github.com/ChrisVilches/ruby-behavior-tree/blob/main/assets/tree_animation.gif?raw=true" />
+</p>
+
 ## Quick start
 
 Add this line to your application's Gemfile:
