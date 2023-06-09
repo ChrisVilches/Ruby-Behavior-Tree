@@ -7,6 +7,10 @@ module BehaviorTree
     # Algorithm to print tree.
     module Printer
       def print
+        puts to_s
+      end
+
+      def to_s
         lines = []
         lines << '∅' # Style for the root node.
         lines += tree_lines
@@ -15,8 +19,7 @@ module BehaviorTree
         lines << uniq_nodes_string
         lines << size_string
         lines << tree_tick_count_string
-
-        puts lines.join "\n"
+        lines.join "\n"
       end
 
       private
@@ -34,7 +37,7 @@ module BehaviorTree
           space = (0...depth).map { |d| vertical_lines_continues.include?(d) ? '│     ' : '      ' }.join
           connector = last_child ? '└─' : '├─'
 
-          "#{space}#{connector}#{class_simple_name(node)} #{status_string(node)} #{tick_count_string(node)}"
+          "#{space}#{connector}#{resolve_display_name(node)} #{status_string(node)} #{tick_count_string(node)}"
         end
       end
 
@@ -83,22 +86,11 @@ module BehaviorTree
            .downcase
       end
 
-      def class_simple_name(node)
-        pretty_name snake_case(node.class.name.split('::').last)
-      end
-
-      # Changes the name of some classes (maps it to a better name).
-      # Mapping is simply based on taste.
-      def pretty_name(name)
-        case name
-        when 'task_base'
-          'task'
-        when 'force_success'
-          'forcesuccess'
-        when 'force_failure'
-          'forcefailure'
+      def resolve_display_name(node)
+        if node.respond_to?(:display_name)
+          node.display_name
         else
-          name
+          snake_case(node.class.name.split('::').last)
         end
       end
     end

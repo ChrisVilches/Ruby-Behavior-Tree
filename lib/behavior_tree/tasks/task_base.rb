@@ -25,6 +25,10 @@ module BehaviorTree
       end
     end
 
+    def display_name
+      'task'
+    end
+
     private
 
     attr_reader :context

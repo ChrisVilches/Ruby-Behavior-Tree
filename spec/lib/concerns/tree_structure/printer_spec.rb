@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+class SomeClass
+  def display_name
+    'some-custom-class-name'
+  end
+end
+
 describe BehaviorTree::TreeStructure::Printer do
   subject do
     random_status = ->(_context, node) {
@@ -41,15 +47,19 @@ describe BehaviorTree::TreeStructure::Printer do
     it { expect(subject.send(:bool_yes_no, false)).to eq 'no' }
   end
 
-  describe '.class_simple_name' do
+  describe '.resolve_display_name' do
     context 'has module' do
       let(:spell_checker) { DidYouMean::SpellChecker.new dictionary: [] }
 
-      it { expect(subject.send(:class_simple_name, spell_checker)).to eq 'spell_checker' }
+      it { expect(subject.send(:resolve_display_name, spell_checker)).to eq 'spell_checker' }
     end
 
     context 'has no module' do
-      it { expect(subject.send(:class_simple_name, [])).to eq 'array' }
+      it { expect(subject.send(:resolve_display_name, [])).to eq 'array' }
+    end
+
+    context 'has display name' do
+      it { expect(subject.send(:resolve_display_name, SomeClass.new)).to eq 'some-custom-class-name' }
     end
   end
 

@@ -4,6 +4,10 @@ module BehaviorTree
   module Decorators
     # Returns always failure when the child is not running.
     class ForceFailure < DecoratorBase
+      def display_name
+        'forcefailure'
+      end
+
       protected
 
       def status_map
